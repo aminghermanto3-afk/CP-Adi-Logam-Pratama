@@ -1,13 +1,1650 @@
-<!doctype html>
-<html lang="en">
+  <!DOCTYPE html>
+  <html lang="id">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT. ADI LOGAM PRATAMA - Company Profile</title>
+    
+    <!-- Tailwind CSS CDN for modern and professional utility design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome CDN for highly secure icons (HTTPS) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Font selection: Google Fonts Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
+    <script>
+      // Configure Tailwind to support custom industrial theme matching the React App
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+    
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Simple smooth transitions for slide transitions */
+      .slide-container {
+        transition: transform 0.5s ease-in-out;
+      }
+      .selection-amber::selection {
+        background-color: #f59e0b;
+        color: #0f172a;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-950 text-slate-100 font-sans selection-amber">
+
+    <!-- ================= HEADER SECTION ================= -->
+    <header class="fixed top-0 left-0 right-0 z-40 bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-slate-800 py-4 transition-all duration-300">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between">
+          
+          <!-- Logo Brand Group -->
+          <a href="#beranda" class="flex items-center space-x-3">
+            <div id="gas-logo-container" class="p-1 bg-white border border-slate-200 rounded-lg flex items-center justify-center w-11 h-11 overflow-hidden shadow-sm">
+              <img 
+                src="https://lh3.googleusercontent.com/d/1le978xWJjo_BmeFs4qx0r295jNmSC4j8" 
+                alt="PT. ADI LOGAM PRATAMA Logo" 
+                class="w-full h-full object-contain"
+                referrerpolicy="no-referrer"
+                onerror="this.style.display='none'; document.getElementById('gas-logo-fallback').style.display='block'; document.getElementById('gas-logo-container').className='p-2.5 bg-gradient-to-br from-amber-500 to-red-600 rounded-lg flex items-center justify-center';"
+              >
+              <div id="gas-logo-fallback" class="hidden">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"></path>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="text-white font-extrabold tracking-wider text-sm sm:text-base leading-tight">
+                PT. ADI LOGAM PRATAMA
+              </div>
+              <div class="text-amber-500 font-mono text-[9px] sm:text-[10px] tracking-widest uppercase">
+                MACHINING FABRICATION & CONTRACTOR</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Desktop Navigation Items -->
+          <nav class="hidden lg:flex items-center space-x-1">
+            <a href="#beranda" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">BERANDA</a>
+            <a href="#tentang-kami" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">TENTANG KAMI</a>
+            <a href="#produk" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">PRODUK</a>
+            <a href="#jasa" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">JASA</a>
+            <a href="#legalitas" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">LEGALITAS</a>
+            <a href="#customer" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">CUSTOMER</a>
+            <a href="#tanya-jawab" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">TANYA JAWAB</a>
+          </nav>
+
+
+
+          <!-- Mobile Hamburguer Button -->
+          <div class="flex lg:hidden items-center space-x-2">
+            <button onclick="toggleMobileMenu()" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg focus:outline-none">
+              <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Drawer -->
+      <div class="hidden lg:hidden w-full bg-slate-900 border-t border-slate-800 mt-4 px-4 py-3 space-y-1" id="mobile-menu">
+        <a href="#beranda" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">BERANDA</a>
+        <a href="#tentang-kami" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">TENTANG KAMI</a>
+        <a href="#produk" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">PRODUK</a>
+        <a href="#jasa" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">JASA</a>
+        <a href="#legalitas" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">LEGALITAS</a>
+        <a href="#customer" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">CUSTOMER</a>
+        <a href="#tanya-jawab" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">TANYA JAWAB</a>
+
+      </div>
+    </header>
+
+    <!-- ================= BERANDA (HERO) SECTION ================= -->
+    <section id="beranda" class="relative min-h-screen pt-28 pb-16 flex items-center bg-slate-950 overflow-hidden">
+      <div class="absolute inset-0 opacity-15">
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#334155_1px,transparent_1px),linear-gradient(to_bottom,#334155_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full filter blur-[100px]"></div>
+      </div>
+
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <!-- Text Left column -->
+          <div class="lg:col-span-7 space-y-8 text-left z-10">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full text-amber-400 text-xs font-mono tracking-wider uppercase">
+              <i class="fa-solid fa-fire text-amber-500 animate-pulse"></i>
+              <span>SPESIALIS MACHINING FABRIKASI & PRECISSION PART</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-none">
+              <span class="block text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-500 to-red-600">
+                PT. ADI LOGAM
+              </span>
+              <span class="block mt-2">PRATAMA</span>
+            </h1>
+
+            <p class="text-slate-300 text-base sm:text-lg md:text-xl max-w-xl font-sans leading-relaxed">
+              Menghasilkan produk unggulan dengan tingkat presisi tinggi sehingga menjamin kualitas serta menawarkan solusi yang efektif dan efisien.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
+              <a href="#produk" class="flex items-center justify-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-extrabold text-sm rounded-lg shadow-lg">
+                <span>Lihat Katalog Produk</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+
+            <!-- Mini Stats -->
+            <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800">
+              <div class="flex items-center space-x-2.5">
+                <div class="p-1.5 bg-slate-800 rounded-lg text-amber-500">
+                  <i class="fa-solid fa-shield-halved text-lg"></i>
+                </div>
+                <div>
+                  <div class="text-white text-xs sm:text-sm font-bold">SNI</div>
+                  <div className="text-slate-400 text-[10px]">Terstandardisasi</div>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2.5">
+                <div class="p-1.5 bg-slate-800 rounded-lg text-amber-500">
+                  <i class="fa-solid fa-award text-lg"></i>
+                </div>
+                <div>
+                  <div class="text-white text-xs sm:text-sm font-bold">Sejak 2017</div>
+                  <div className="text-slate-400 text-[10px]">Berpengalaman</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual Image right column -->
+          <div class="lg:col-span-5 relative flex justify-center items-center z-10">
+            <div class="relative w-full max-w-md aspect-square bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden group">
+              <div class="absolute inset-0 overflow-hidden">
+                <video
+                  id="profileVideo"
+                  autoplay
+                  muted
+                  playsinline
+                  poster="https://lh3.googleusercontent.com/d/1USaSlMunScJOyiPa1XcG_uKzE6fyWQ2r"
+                  class="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-all duration-500"
+                >
+                  <source src="https://lh3.googleusercontent.com/d/1m3gOn3ZxSS_f3qVxEh34UAH4OkI9eoQd" type="video/mp4">
+                  <source src="https://drive.google.com/uc?export=download&id=1m3gOn3ZxSS_f3qVxEh34UAH4OkI9eoQd" type="video/mp4">
+                </video>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/25 to-transparent pointer-events-none"></div>
+              
+              <!-- Standby Image Overlay -->
+              <div id="videoEndedOverlay" class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6 z-20 hidden transition-opacity duration-500 opacity-0">
+                <img 
+                  src="https://lh3.googleusercontent.com/d/1USaSlMunScJOyiPa1XcG_uKzE6fyWQ2r" 
+                  alt="Standby" 
+                  class="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
+                  onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600';"
+                />
+                <div class="absolute inset-0 bg-slate-950/60 pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col items-center space-y-4">
+                  <button 
+                    id="replayButton"
+                    class="p-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer"
+                    title="Putar Kembali"
+                  >
+                    <i class="fa-solid fa-rotate-left text-lg"></i>
+                  </button>
+                  <div>
+                    <h4 class="text-white font-extrabold text-sm tracking-wide uppercase">Video Selesai Diputar</h4>
+                    <p class="text-slate-300 text-xs mt-1 px-4 leading-relaxed">Klik tombol untuk memutar kembali video profil PT. Adi Logam Pratama</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Video Info Bottom Overlay -->
+              <div id="videoInfoOverlay" class="absolute bottom-6 left-6 right-6 text-left pointer-events-none">
+                <div class="flex items-center space-x-2 mb-2">
+                  <span class="px-2.5 py-0.5 bg-amber-500 text-slate-950 font-mono text-[9px] font-extrabold uppercase rounded tracking-wider">AHLINYA MACHINING & PABRIKASI</span>
+                  <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                </div>
+                <p class="text-slate-300 text-xs leading-relaxed font-medium">Part presisi tinggi dikerjakan dengan tenaga ahli.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TENTANG KAMI SECTION ================= -->
+    <section id="tentang-kami" class="py-20 bg-slate-900 border-t border-slate-800 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">TENTANG KAMI</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Mengenal PT. Adi Logam Pratama</h3>
+          <p class="mt-4 text-slate-200 text-sm sm:text-base font-semibold">Perusahaan dengan segenap karyawannya bangga bekerja di bidang ini, dimana mereka dapat tumbuh dan memberikan kinerja yang terbaik, dan secara terus menerus berupaya untuk mencapai kesuksesan.</p>
+        </div>
+
+        <!-- Tab Buttons for Section toggle -->
+        <div class="flex justify-center mb-12">
+          <div class="inline-flex p-1 bg-slate-950 rounded-xl border border-slate-800">
+            <button onclick="toggleAboutTab('profil')" id="tab-btn-profil" class="flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md">
+              <i class="fa-solid fa-building"></i>
+              <span>Profil Perusahaan</span>
+            </button>
+            <button onclick="toggleAboutTab('visi-misi')" id="tab-btn-visi-misi" class="flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg text-slate-400 hover:text-white">
+              <i class="fa-solid fa-bullseye"></i>
+              <span>Visi & Misi</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Profil Perusahaan Tab Content -->
+        <div id="about-content-profil" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-left">
+          <div class="lg:col-span-7 space-y-6">
+            <div class="flex items-center space-x-3 text-amber-500 font-mono text-sm">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+              <span>SEJARAH & KOMITMEN</span>
+            </div>
+            <h4 class="text-2xl font-bold text-white tracking-tight">Machining fabrication General Trading & Supplier</h4>
+            <p class="text-slate-100 text-sm sm:text-base leading-relaxed font-semibold">
+              PT. Adi Logam Pratama didirikan di Bekasi pada tanggal 21 Agustus tahun 2017, merupakan perusahaan General Trading Lokal yang bergerak di bidang MACHINING, FABRICATION, CONSTRUCTION, ELECTRICAL, PRECISSION PARTS & CIVIL.
+            </p>
+            <p class="text-slate-100 text-sm sm:text-base leading-relaxed font-semibold">
+              Dengan pesatnya perkembangan dunia industri di Indonesia menjadi tantangan bagi setiap perusahaan untuk mengembangkan potensinya. 
+              PT. Adi Logam Pratama hadir tumbuh dan berkembang sebagai sebuah perusahaan yang menawarkan keunggulan di bidang jasa konstruksi Sipil dan Fabrikasi dengan terus berimprovisasi guna memenuhi kebutuhan dan permintaan dunia industri.
+            </p>
+            <p class="text-slate-100 text-sm sm:text-base leading-relaxed font-semibold">
+              Di bidang Machining, perusahaan ini terus menjawab setiap tantangan dengan menghasilkan produk unggulan dengan tingkat presisi yang tinggi sehingga menjamin kualitas serta menawarkan solusi yang efektif dan efisien.
+            </p>
+
+            <!-- Small Grid Stats -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-slate-800">
+              <div>
+                <div class="text-3xl font-extrabold text-amber-500">9+</div>
+                <div class="text-slate-200 text-xs mt-1 font-bold">Tahun Berdiri</div>
+              </div>
+              <div>
+                <div class="text-3xl font-extrabold text-amber-500">500+</div>
+                <div class="text-slate-200 text-xs mt-1 font-bold">Project Selesai</div>
+              </div>
+              <div>
+                <div class="text-3xl font-extrabold text-amber-500">40+</div>
+                <div class="text-slate-200 text-xs mt-1 font-bold">Klien Korporasi</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+              <h5 class="text-white font-bold text-lg mb-4 flex items-center space-x-2">
+                <i class="fa-solid fa-map-location-dot text-amber-500"></i>
+                <span>Kantor & Pabrik Utama</span>
+              </h5>
+              <div class="space-y-4">
+                <div class="p-4 bg-slate-900 rounded-xl border border-slate-800/50">
+                  <div class="text-xs font-mono text-amber-500 mb-1">ALAMAT UTAMA</div>
+                  <p class="text-white text-sm font-semibold">Jl. Garnet Raya, RT.003/RW.015, Kaliabang Tengah, Kec. Bekasi Utara, Kota Bks, Jawa Barat 17125, Indonesia</p>
+                </div>
+                <div class="p-4 bg-slate-900 rounded-xl border border-slate-800/50">
+                  <div class="text-xs font-mono text-amber-500 mb-2 flex items-center gap-1">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>GOOGLE MAPS</span>
+                  </div>
+                  <div class="w-full h-48 rounded-xl overflow-hidden border border-slate-800/80">
+                    <iframe 
+                      title="Google Maps Location"
+                      src="https://maps.google.com/maps?q=-6.1956,106.9934(PT.%20Adi%20Logam%20Pratama)&z=17&output=embed" 
+                      class="w-full h-full border-0" 
+                      allowfullscreen="" 
+                      loading="lazy" 
+                      referrerpolicy="no-referrer">
+                    </iframe>
+                  </div>
+                </div>
+                <div class="p-4 bg-slate-900 rounded-xl border border-slate-800/50">
+                  <div class="text-xs font-mono text-amber-500 mb-1">KONTAK LAYANAN</div>
+                  <div class="space-y-1.5 text-sm text-white">
+                    <p><span class="text-slate-400">Telp Kantor:</span> <a href="tel:02188383789" class="font-semibold text-white hover:text-amber-500 transition-colors">(021) 88383789</a></p>
+                    <p><span class="text-slate-400">WhatsApp:</span> <a href="https://wa.me/6282162294814" target="_blank" rel="noopener noreferrer" class="font-semibold text-white hover:text-amber-500 transition-colors underline decoration-slate-700">+62 821 6229 4814 (Layanan Chat)</a></p>
+                    <p><span class="text-slate-400">Email:</span> <a href="mailto:adilogampratama@yahoo.com" class="font-semibold text-white hover:text-amber-500 transition-colors underline decoration-slate-700">adilogampratama@yahoo.com</a></p>
+                  </div>
+                </div>
+                <div class="p-4 bg-amber-500/5 rounded-xl border border-amber-500/20 flex items-center space-x-3 text-left">
+                  <div class="p-2 bg-amber-500/20 text-amber-500 rounded-lg">
+                    <i class="fa-solid fa-certificate"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-xs font-bold uppercase">Sertifikasi Legal</div>
+                    <p class="text-[11px] text-slate-400">Memiliki SNI, NIB Resmi, & Bersertifikat.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visi & Misi Tab Content (Initially hidden) -->
+        <div id="about-content-visi-misi" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+          <div class="p-8 bg-slate-950 border border-slate-800 rounded-2xl flex flex-col justify-between hover:border-amber-500/30 transition-all">
+            <div>
+              <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 border border-amber-500/25 text-amber-500 text-xl">
+                <i class="fa-solid fa-compass"></i>
+              </div>
+              <h4 class="text-2xl font-extrabold text-white mb-4">VISI KAMI</h4>
+              <p class="text-slate-100 text-base leading-relaxed italic font-semibold">
+                &ldquo;Menjadi Perusahaan Yang Memberi Total Quality Services dan Berdaya Saing Tinggi.&rdquo;
+              </p>
+            </div>
+            <div class="mt-8 pt-6 border-t border-slate-800 text-[10px] font-mono text-slate-500">PT. ADI LOGAM PRATAMA</div>
+          </div>
+
+          <div class="p-8 bg-slate-950 border border-slate-800 rounded-2xl hover:border-amber-500/30 transition-all">
+            <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 border border-amber-500/25 text-amber-500 text-xl">
+              <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <h4 class="text-2xl font-extrabold text-white mb-6">MISI KAMI</h4>
+            <ul class="space-y-4">
+              <li class="flex items-start space-x-3 text-sm text-slate-100 font-semibold">
+                <i class="fa-solid fa-circle-check text-amber-500 mt-1 shrink-0"></i>
+                <span>Menghasilkan produk machining fabrikasi bermutu tinggi yang memenuhi spesifikasi teknis pelanggan.</span>
+              </li>
+              <li class="flex items-start space-x-3 text-sm text-slate-100 font-semibold">
+                <i class="fa-solid fa-circle-check text-amber-500 mt-1 shrink-0"></i>
+                <span>Mengedepankan kepuasan pelanggan dengan Memberikan pelayanan terbaik dan menghasilkan produk Sesuai dengan permintaan pelanggan.</span>
+              </li>
+              <li class="flex items-start space-x-3 text-sm text-slate-100 font-semibold">
+                <i class="fa-solid fa-circle-check text-amber-500 mt-1 shrink-0"></i>
+                <span>Menjamin keselamatan kerja (K3) dan menerapkan proses produksi yang ramah lingkungan.</span>
+              </li>
+              <li class="flex items-start space-x-3 text-sm text-slate-100 font-semibold">
+                <i class="fa-solid fa-circle-check text-amber-500 mt-1 shrink-0"></i>
+                <span>Membangun kemitraan jangka panjang yang saling menguntungkan dengan pelanggan dan pemasok.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= PRODUK SECTION ================= -->
+    <section id="produk" class="py-20 bg-slate-950 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">KATALOG PRODUK</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Produk Unggulan Machining & Fabrikasi</h3>
+          <p class="mt-4 text-slate-200 text-sm sm:text-base font-semibold">Kami menghadirkan solusi manufaktur terintegrasi melalui lini produk unggulan bermutu tinggi. Mengombinasikan presisi teknologi machining (bubut, milling, CNC) dengan ketangguhan konstruksi fabrication (pengelasan, pemotongan, 
+            dan perakitan logam), kami siap memenuhi kebutuhan komponen industri Anda. Setiap produk dirancang khusus (custom-made) sesuai spesifikasi teknis yang akurat, tahan lama, dan berstandar standar industri global demi menjaga efisiensi operasional bisnis Anda.</p>
+        </div>
+
+        <!-- Categories Filter Buttons -->
+        <div class="flex flex-wrap justify-center gap-2 mb-10">
+          <button onclick="filterProducts('all')" id="btn-f-all" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-amber-500 border-amber-500 text-slate-950 font-bold shadow-md">SEMUA</button>
+          <button onclick="filterProducts('machining')" id="btn-f-machining" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-slate-900 border-slate-800 text-slate-400 hover:text-white">MACHINING</button>
+          <button onclick="filterProducts('fabrication')" id="btn-f-fabrication" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-slate-900 border-slate-800 text-slate-400 hover:text-white">FABRIKASI / KONTRUKSI</button>
+          <button onclick="filterProducts('architectural')" id="btn-f-architectural" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-slate-900 border-slate-800 text-slate-400 hover:text-white">INSTALATION</button>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="products-grid">
+
+          <!-- Product 2 -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="fabrication">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1SSAeYo34lDa9BgHvoSid3TYceVdLxNYz" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=600';" alt="LAUNCHER RECEIVER" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">FABRIKASI / KONTRUKSI</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">LAUNCHER RECEIVER</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Sistem Launcher & Receiver Pigging presisi untuk keperluan pembersihan, inspeksi, dan pemeliharaan pipa penyalur gas dan minyak bumi.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Carbon Steel ASTM A106 Gr. B / API 5L Gr. B</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Standard Desain: ASME Sec. VIII Div. 1 & ASME B31.8</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Tekanan Operasi: ANSI Class 150 s.d 600</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Fitur: Quick Opening Closure dengan interlocking system</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">STANDAR ASME</span>
+                <button onclick="openQuoteModal('LAUNCHER RECEIVER', 'fabrication')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 2b (Safety Filter) -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="fabrication">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1TAY6I_7OKp_y-Ehlvp4iMn7a_PBSzFBA" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600';" alt="SAFETY FILTER" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">FABRIKASI / KONTRUKSI</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">SAFETY FILTER</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Filter penyaring berkeamanan tinggi (Simplex/Duplex Strainer) untuk memproteksi peralatan downstream dari kontaminasi partikel padat pada aliran fluida.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Carbon Steel / Stainless Steel SUS 304/316</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Element Filter: Stainless Steel Wire Mesh s.d 5 Mikron</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Sambungan: Flange ANSI / JIS Standard</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Aplikasi: Penyaringan BBM, pelumas, zat kimia, air industri</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">PRESISI TINGGI</span>
+                <button onclick="openQuoteModal('SAFETY FILTER', 'fabrication')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 2c (Vessel Tank) -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="fabrication">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/17HHutY0BtDpqjhVKa_FRaGgw3MKmTykD" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&q=80&w=600';" alt="VESSEL TANK" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">FABRIKASI / KONTRUKSI</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">VESSEL TANK</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Tangki bejana tekan (Pressure Vessel) berkapasitas besar untuk penyimpanan gas, udara bertekanan, uap panas, atau fluida cair industri.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Pressure Vessel Plate ASTM A516 Gr. 70</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Standar Fabrikasi: ASME Section VIII Division 1</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Kapasitas & Tekanan: Kustomisasi sesuai kebutuhan operasional</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Sertifikasi: Depnaker (SIA - Surat Izin Alat) resmi</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">BEJANA TEKAN</span>
+                <button onclick="openQuoteModal('VESSEL TANK', 'fabrication')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 9 (Housing Gear Box) -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="machining">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1-tSlPmD56nRjLcSNWCUO5IGzDv-cFISh" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1537462715879-360eeb61a0bc?auto=format&fit=crop&q=80&w=600';" alt="HOUSING GEAR BOX" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">MACHINING</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">HOUSING GEAR BOX</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Rumah roda gigi (Housing Gearbox) presisi kustom yang dirancang untuk meredam getaran dan melindungi transmisi gigi mekanis pada mesin industri berat.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Cast Iron FC 250 / Ductile Iron FCD 500</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Toleransi: Standar presisi tinggi ISO H7</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Fitur: Struktur kokoh dengan ketahanan termal tinggi</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Aplikasi: Gearbox conveyor, mesin pabrik gula, semen, tambang</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">PRESISI ISO H7</span>
+                <button onclick="openQuoteModal('HOUSING GEAR BOX', 'machining')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 10 (Shaft & Worm Gear) -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="machining">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1r37JJm0rSCc9QVS2wGCjGfsiYolcdoiV" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&q=80&w=600';" alt="SHAFT & WORM GEAR" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">MACHINING</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">SHAFT & WORM GEAR</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Poros (Shaft) dan roda gigi cacing (Worm Gear) dengan tingkat presisi tinggi untuk sistem transmisi torsi besar dengan pereduksi putaran yang halus.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Baja Paduan SCM440 / Kuningan Bronze</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Proses: CNC Turning, Hobbing, & Hardening (HRC 55-60)</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Modul: Kustomisasi sesuai gambar teknik</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Keunggulan: Gesekan rendah, efisiensi transfer daya tinggi</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">HARDENED GEAR</span>
+                <button onclick="openQuoteModal('SHAFT & WORM GEAR', 'machining')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 11 (Spare Part Mesin Industri) -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="machining">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1bwUU4oyBPrDtNEMQjQtFYk8VhzjLNNhO" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=600';" alt="SPARE PART MESIN INDUSTRI" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">MACHINING</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">SPARE PART MESIN INDUSTRI</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Pembuatan suku cadang mesin industri (spare parts) kustom presisi tinggi sesuai sampel atau gambar kerja untuk menjamin kelangsungan lini produksi.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Baja Karbon, Baja Paduan, Stainless Steel, Kuningan, Nylon</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Mesin: CNC Lathe, CNC Milling, Manual Lathe, Radial Drilling</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Akurasi Dimensi: Mencapai toleransi micron (≤ 0.01 mm)</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Layanan: Reverse engineering dari contoh part yang aus/rusak</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">PRESISI MIKRON</span>
+                <button onclick="openQuoteModal('SPARE PART MESIN INDUSTRI', 'machining')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 3 -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="fabrication">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1hiBegoSc6xquziLSjdEwRNiq94bz88c5" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&q=80&w=600';" alt="Renovasi Gedung Lt.2" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">FABRIKASI / KONTRUKSI</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">Pembangunan Gedung Utama 2 Lantai</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">pembangunan gedung 2 lantai menggunakan kombinasi struktur baja WF kokoh dan pengerjaan interior sipil berstandar tinggi.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Struktur Utama: Baja WF & H-Beam SNI</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Pekerjaan Sipil: Dinding Partisi Gypsum, Plafond, Pengecatan</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Sistem MEP: Instalasi Listrik, Penerangan, & AC</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Standar Keselamatan: K3 Konstruksi Sipil & Fabrikasi</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">KONSTRUKSI SIPIL</span>
+                <button onclick="openQuoteModal('Renovasi Gedung Lt.2', 'fabrication')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 4 -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="architectural">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1IGX6KTPBea3QnjbXASDaBs0FQ5JDYl_l" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=600';" alt="PIPE INSTALATION - ISO TANK TO PRODUCTION" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">INSTALATION</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">PIPE INSTALATION - ISO TANK TO PRODUCTION</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Instalasi Pipa ISO Tank to Produksi PT Wihadil dengan standar tinggi.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Stainless Steel SUS 316L</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Aplikasi: Distribusi Liquid Chemical</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Standar: ANSI Class 150 / ASME</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">PRESISI TINGGI</span>
+                <button onclick="openQuoteModal('PIPE INSTALATION - ISO TANK TO PRODUCTION', 'architectural')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 5 -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="architectural">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1gR1we1D19SkZbjjkPgXrwbdWtOMSvdy7" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1535813547-99c456a41d4a?auto=format&fit=crop&q=80&w=600';" alt="PIPE INSTALATION - PRODUCTION LINE SYSTEM" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">INSTALATION</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">PIPE INSTALATION - PRODUCTION LINE SYSTEM</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Sistem perpipaan terintegrasi untuk jalur distribusi bahan baku produksi.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Carbon Steel ASTM A106 Gr. B</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Proses: TIG/GTAW & SMAW Welding</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Uji Mutu: Hydrostatic Test & Radiography 100%</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">STANDAR AWS</span>
+                <button onclick="openQuoteModal('PIPE INSTALATION - PRODUCTION LINE SYSTEM', 'architectural')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 6 -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="architectural">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/12MKhzXac---xhxPqWPm3KnSuXDDxNuCB" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581092162613-f97393457128?auto=format&fit=crop&q=80&w=600';" alt="PIPE INSTALATION - UTILITY SYSTEM" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">INSTALATION</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">PIPE INSTALATION - UTILITY SYSTEM</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Instalasi pipa utilitas penunjang mesin produksi utama pabrik.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Galvanized Steel Pipe (GIP)</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Aplikasi: Steam & High Pressure Water</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Sertifikasi: Depnaker & Standard K3</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">STANDARD K3</span>
+                <button onclick="openQuoteModal('PIPE INSTALATION - UTILITY SYSTEM', 'architectural')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= JASA SECTION ================= -->
+    <section id="jasa" class="py-20 bg-slate-900 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">LAYANAN JASA</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Layanan Proses Terintegritas</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+          
+          <!-- Jasa 1 -->
+          <div class="p-8 bg-slate-950 border border-slate-800 rounded-2xl hover:border-amber-500/30 transition-all flex flex-col justify-between">
+            <div class="space-y-4">
+              <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 text-xl">
+                <i class="fa-solid fa-gears animate-pulse"></i>
+              </div>
+              <h4 class="text-xl font-extrabold text-white">Proses Machining</h4>
+              <p class="text-slate-200 text-sm leading-relaxed font-semibold">Machining adalah proses memotong dan membentuk material mentah (logam/plastik) menggunakan mesin presisi menjadi komponen jadi yang akurat.</p>
+              <ul class="space-y-2 pt-2 text-xs sm:text-sm text-slate-100 font-semibold">
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i><strong>Bubut (Turning):</strong> Membuat komponen berbentuk bulat/silinder (contoh: as, baut, poros).</li>
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i><strong>Frais (Milling):</strong> Menyayat permukaan datar dan membuat alur (contoh: roda gigi, balok mesin).</li>
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i><strong>CNC Machining:</strong> Proses bubut dan frais otomatis menggunakan komputer untuk hasil super cepat, presisi, dan rumit.</li>
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i><strong>Drilling & Boring:</strong> Membuat dan memperbesar lubang pada material.</li>
+              </ul>
+            </div>
+            <div class="pt-4 border-t border-slate-900 mt-6 text-[10px] font-mono text-slate-500">Solusi cepat untuk pembuatan suku cadang kustom dan spare part presisi.</div>
+          </div>
+
+          <!-- Jasa 2 -->
+          <div class="p-8 bg-slate-950 border border-slate-800 rounded-2xl hover:border-amber-500/30 transition-all flex flex-col justify-between">
+            <div class="space-y-4">
+              <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 text-xl">
+                <i class="fa-solid fa-hammer"></i>
+              </div>
+              <h4 class="text-xl font-extrabold text-white">Fabrikasi Struktur Baja</h4>
+              <p class="text-slate-200 text-sm leading-relaxed font-semibold">Pemotongan profil, perakitan, dan pengelasan plat baja berat bersertifikat standard pengelasan AWS.</p>
+              <ul class="space-y-2 pt-2 text-xs sm:text-sm text-slate-100 font-semibold">
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Gantry CNC Plasma Cutting presisi</li>
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Juru Las (Welder) bersertifikat depnaker</li>
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Shot blasting pembersih karat pra cat</li>
+              </ul>
+            </div>
+            <div class="pt-4 border-t border-slate-900 mt-6 text-[10px] font-mono text-slate-500 uppercase">STANDAR AWS</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LEGALITAS SECTION ================= -->
+    <section id="legalitas" class="py-20 bg-slate-950 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">KEPATUHAN ADMINISTRASI</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Legalitas Perusahaan Resmi</h3>
+          <p class="mt-4 text-slate-200 text-sm sm:text-base font-semibold">PT. Adi Logam Pratama merupakan entitas hukum perseroan terbatas sah yang melengkapi seluruh aspek persyaratan administrasi BUMN dan B2B.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 text-left items-start">
+          <div class="lg:col-span-5 space-y-6">
+            <div class="flex items-center space-x-3 text-amber-500 font-mono text-xs">
+              <i class="fa-solid fa-scale-balanced"></i>
+              <span>DOKUMEN RESMI</span>
+            </div>
+            <h4 class="text-2xl font-bold text-white tracking-tight">Kredibilitas Hukum Terjamin untuk Kemitraan Pemerintah</h4>
+            <p class="text-slate-200 text-sm leading-relaxed font-semibold">Setiap dokumen telah didaftarkan dalam sistem resmi pemerintah Republik Indonesia. Kami senantiasa taat pajak dan menerbitkan E-Faktur PPN resmi untuk menunjang keamanan audit keuangan pelanggan korporat.</p>
+            
+            <div class="space-y-3 pt-2">
+              <div class="flex items-center space-x-2 text-xs text-slate-100 font-bold">
+                <i class="fa-solid fa-circle-check text-amber-500"></i>
+                <span>Memiliki NIB KBLI Pengolahan Logam</span>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Doc 1 -->
+            <div onclick="openLegalityViewer('Akta Pendirian Perusahaan', 'No. 52 tanggal 28-08-2022 (pembaruan)', 'Notaris Monica Lidwina,S.H.,M.K.n', '2022')" class="p-5 bg-slate-900 border border-slate-800 rounded-xl hover:border-amber-500/30 cursor-pointer transition-all group">
+              <div class="w-10 h-10 bg-slate-950 rounded-lg flex items-center justify-center border border-slate-800 mb-4 group-hover:text-amber-500 transition-colors">
+                <i class="fa-solid fa-file-invoice text-slate-400 group-hover:text-amber-500"></i>
+              </div>
+              <h5 class="text-white font-bold text-sm">Akta Pendirian Perusahaan</h5>
+              <p class="text-slate-200 font-mono text-[11px] mt-1 select-all font-semibold">No. 52 tanggal 28-08-2022 (pembaruan)</p>
+              <div class="pt-4 border-t border-slate-800 mt-4 flex items-center justify-between text-[10px] text-slate-500">
+                <span>Notaris Monica Lidwina</span>
+                <span class="text-amber-500 font-bold">Detail <i class="fa-solid fa-chevron-right ml-1"></i></span>
+              </div>
+            </div>
+
+            <!-- Doc 2 -->
+            <div onclick="openLegalityViewer('Nomor Induk Berusaha (NIB)', '2510220054409', 'Lembaga OSS Kementerian Investasi', '2022')" class="p-5 bg-slate-900 border border-slate-800 rounded-xl hover:border-amber-500/30 cursor-pointer transition-all group">
+              <div class="w-10 h-10 bg-slate-950 rounded-lg flex items-center justify-center border border-slate-800 mb-4 group-hover:text-amber-500 transition-colors">
+                <i class="fa-solid fa-file-contract text-slate-400 group-hover:text-amber-500"></i>
+              </div>
+              <h5 class="text-white font-bold text-sm">Nomor Induk Berusaha (NIB)</h5>
+              <p class="text-slate-200 font-mono text-[11px] mt-1 select-all font-semibold">2510220054409</p>
+              <div class="pt-4 border-t border-slate-800 mt-4 flex items-center justify-between text-[10px] text-slate-500">
+                <span>Kementerian Investasi</span>
+                <span class="text-amber-500 font-bold">Detail <i class="fa-solid fa-chevron-right ml-1"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= CUSTOMER & PORTOFOLIO SECTION ================= -->
+    <!-- CAROUSEL FIXED AND FULLY WORKING INSIDE GOOGLE APPS SCRIPT -->
+    <section id="customer" class="py-20 bg-slate-900 border-t border-slate-800 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">CUSTOMER & PORTOFOLIO</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Kemitraan & Proyek Sukses</h3>
+          <p class="mt-4 text-slate-200 text-sm sm:text-base font-semibold">Telah dipercaya oleh berbagai perusahaan terkemuka.</p>
+        </div>
+
+        <!-- PORTFOLIO SLIDESHOW - PURE JAVASCRIPT SLIDER (No jQuery or complex CSS framework dependency) -->
+        <div class="mb-16">
+          <div class="flex items-center justify-between mb-4 text-left">
+            <span class="text-amber-500 font-mono text-xs tracking-widest"><i class="fa-solid fa-briefcase"></i> SLIDE GALERI PROYEK</span>
+            <div class="flex items-center space-x-2">
+              <button onclick="slidePrev()" class="p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-lg transition-all shadow-md">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button onclick="slideNext()" class="p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-lg transition-all shadow-md">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Slider outer wrap -->
+          <div class="bg-slate-950 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl relative">
+            <div class="relative w-full overflow-hidden min-h-[400px]">
+              
+              <!-- Slides Container with flex -->
+              <div class="flex slide-container w-full h-full" id="slider-track" style="transform: translateX(0%);">
+                
+                <!-- Slide 1 -->
+                <div class="w-full shrink-0 grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                  <div class="lg:col-span-6 relative aspect-video lg:aspect-auto overflow-hidden bg-slate-900 flex justify-center items-center">
+                    <img src="https://lh3.googleusercontent.com/d/1VAPddltLxfe34F1s6pX23gsdVKKW5Kdm" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=800';" alt="Fabrikasi & Instalasi Safety Filter" class="w-full h-full object-cover opacity-80" referrerpolicy="no-referrer">
+                  </div>
+                  <div class="lg:col-span-6 p-8 sm:p-10 flex flex-col justify-between text-left space-y-6">
+                    <div class="space-y-4">
+                      <div class="flex items-center gap-4 text-xs font-mono text-slate-200 font-semibold">
+                        <span class="text-amber-500"><i class="fa-solid fa-calendar mr-1"></i> 2024</span>
+                        <span><i class="fa-solid fa-map-pin mr-1 text-red-500"></i> Bekasi, Jawa Barat</span>
+                      </div>
+                      <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Fabrikasi & Instalasi Safety Filter</h4>
+                      <p class="text-slate-200 text-sm leading-relaxed font-semibold">Fabrikasi presisi tinggi dan instalasi sistem safety filter berbahan stainless steel khusus untuk menyaring material halus pada lini produksi industri.</p>
+                      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">PELANGGAN</span>
+                          <span class="text-white text-xs font-bold block mt-1">PT Andalan Furnindo</span>
+                        </div>
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">MATERIAL</span>
+                          <span class="text-amber-500 text-xs font-mono font-bold block mt-1">Stainless Steel SUS304 / 316L</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="w-full shrink-0 grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                  <div class="lg:col-span-6 relative aspect-video lg:aspect-auto overflow-hidden bg-slate-900 flex justify-center items-center">
+                    <img src="https://lh3.googleusercontent.com/d/1OnQ8uQEYmNy9ze9Evcx3HG1ST-BJXbi4" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&q=80&w=800';" alt="Machining & Assy Sandwich Valve" class="w-full h-full object-cover opacity-80" referrerpolicy="no-referrer">
+                  </div>
+                  <div class="lg:col-span-6 p-8 sm:p-10 flex flex-col justify-between text-left space-y-6">
+                    <div class="space-y-4">
+                      <div class="flex items-center gap-4 text-xs font-mono text-slate-200 font-semibold">
+                        <span class="text-amber-500"><i class="fa-solid fa-calendar mr-1"></i> 2023</span>
+                        <span><i class="fa-solid fa-map-pin mr-1 text-red-500"></i> Bekasi, Jawa Barat</span>
+                      </div>
+                      <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Machining & Assy Sandwich Valve</h4>
+                      <p class="text-slate-200 text-sm leading-relaxed font-semibold">Proses pengerjaan pemesinan (machining) bubut presisi dan perakitan (assembly) komponen katup sandwich tekanan tinggi untuk sistem tapping gas.</p>
+                      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">PELANGGAN</span>
+                          <span class="text-white text-xs font-bold block mt-1">PT. Farrel Internusa Pratama</span>
+                        </div>
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">MATERIAL</span>
+                          <span class="text-amber-500 text-xs font-mono font-bold block mt-1">Carbon Steel ASTM A516 Gr.70</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="w-full shrink-0 grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                  <div class="lg:col-span-6 relative aspect-video lg:aspect-auto overflow-hidden bg-slate-900 flex justify-center items-center">
+                    <img src="https://lh3.googleusercontent.com/d/1Jp2g4cifpHSUnqP8PfXDX69JErFedj3d" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&q=80&w=800';" alt="Pembangunan Kantor Lt. 2 ( Renovasi )" class="w-full h-full object-cover opacity-80" referrerpolicy="no-referrer">
+                  </div>
+                  <div class="lg:col-span-6 p-8 sm:p-10 flex flex-col justify-between text-left space-y-6">
+                    <div class="space-y-4">
+                      <div class="flex items-center gap-4 text-xs font-mono text-slate-200 font-semibold">
+                        <span class="text-amber-500"><i class="fa-solid fa-calendar mr-1"></i> 2025</span>
+                        <span><i class="fa-solid fa-map-pin mr-1 text-red-500"></i> Cilegon, Banten</span>
+                      </div>
+                      <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Pembangunan Kantor Utama</h4>
+                      <p class="text-slate-200 text-sm leading-relaxed font-semibold">Pekerjaan sipil gedung kantor 2 leading-tightantai, mencakup instalasi struktur baja WF, dinding partisi gypsum, instalasi kelistrikan (MEP), plafond, serta pengerjaan interior dengan presisi tinggi.</p>
+                      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">PELANGGAN</span>
+                          <span class="text-white text-xs font-bold block mt-1">PT Wihadil</span>
+                        </div>
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">KATEGORI</span>
+                          <span class="text-amber-500 text-xs font-mono font-bold block mt-1">Sipil & Konstruksi Baja</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customers logos grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="p-6 bg-slate-950 border border-slate-800 rounded-xl flex flex-col justify-center items-center text-center">
+            <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center font-extrabold text-white text-sm mb-3">WIKA</div>
+            <div class="text-white text-xs font-bold leading-tight line-clamp-1">PT. WIJAYA KARYA Tbk</div>
+          </div>
+          <div class="p-6 bg-slate-950 border border-slate-800 rounded-xl flex flex-col justify-center items-center text-center">
+            <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center font-extrabold text-white text-sm mb-3">ADHI</div>
+            <div class="text-white text-xs font-bold leading-tight line-clamp-1">PT. ADHI KARYA Tbk</div>
+          </div>
+          <div class="p-6 bg-slate-950 border border-slate-800 rounded-xl flex flex-col justify-center items-center text-center">
+            <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center font-extrabold text-white text-sm mb-3">SIG</div>
+            <div class="text-white text-xs font-bold leading-tight line-clamp-1">PT. SEMEN INDONESIA Tbk</div>
+          </div>
+          <div class="p-6 bg-slate-950 border border-slate-800 rounded-xl flex flex-col justify-center items-center text-center">
+            <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center font-extrabold text-white text-sm mb-3">WIHADIL</div>
+            <div class="text-white text-xs font-bold leading-tight line-clamp-1">PT. WIHADIL</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= TANYA JAWAB (FAQ) SECTION ================= -->
+    <section id="tanya-jawab" class="py-20 bg-slate-950 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">FAQ</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Tanya Jawab (FAQ)</h3>
+          <p class="mt-4 text-slate-200 text-sm sm:text-base font-semibold">Informasi seputar proses pemesanan khusus, pengiriman, dan kendali mutu material pengecoran.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 text-left items-start">
+          
+          <!-- Accordion Questions Left column -->
+          <div class="lg:col-span-7 space-y-4">
+            <!-- Item 1 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+              <button onclick="toggleFaq('faq-1')" class="w-full text-left px-6 py-4 flex items-center justify-between text-white font-bold text-sm sm:text-base">
+                <span>Bagaimana alur melakukan pemesanan produk ?</span>
+                <i class="fa-solid fa-chevron-down text-slate-400 transition-transform" id="faq-icon-faq-1"></i>
+              </button>
+              <div id="faq-ans-faq-1" class="hidden px-6 pb-5 pt-1 text-slate-100 text-xs sm:text-sm leading-relaxed border-t border-slate-800/40 bg-slate-950/20 font-semibold">
+                Pelanggan dapat mengirimkan gambar teknis CAD atau sampel fisik. Engineer kami akan mereview dan redraw,eksekusi proses lalu melakukan pengecekan sebelum pengiriman akhir.
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+              <button onclick="toggleFaq('faq-2')" class="w-full text-left px-6 py-4 flex items-center justify-between text-white font-bold text-sm sm:text-base">
+                <span>Apakah produk dilengkapi sertifikat material?</span>
+                <i class="fa-solid fa-chevron-down text-slate-400 transition-transform" id="faq-icon-faq-2"></i>
+              </button>
+              <div id="faq-ans-faq-2" class="hidden px-6 pb-5 pt-1 text-slate-100 text-xs sm:text-sm leading-relaxed border-t border-slate-800/40 bg-slate-950/20 font-semibold">
+                Ya, setiap penggunaan material selalu disertakan millsheet material langsung dari supplier material terpercaya kami sesuai permintaan.
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact details Right column -->
+          <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-6">
+            <h4 class="text-white font-bold text-lg mb-2">Butuh Bantuan Lebih Lanjut?</h4>
+            <p class="text-slate-200 text-xs leading-relaxed mb-6 font-semibold">Konsultasikan kebutuhan Anda kepada kepala teknis kami.</p>
+            
+            <div class="space-y-4 text-xs text-slate-100 font-semibold">
+              <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-phone text-amber-500 text-base shrink-0"></i>
+                <a href="https://wa.me/6282162294814" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors font-semibold underline decoration-slate-700">+62 821 6229 4814 (WhatsApp)</a>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-envelope text-amber-500 text-base shrink-0"></i>
+                <a href="mailto:adilogampratama@yahoo.com" class="hover:text-amber-500 transition-colors font-semibold underline decoration-slate-700">adilogampratama@yahoo.com</a>
+              </div>
+              <div class="flex items-start space-x-3">
+                <i class="fa-solid fa-map-location-dot text-amber-500 text-base shrink-0 mt-0.5"></i>
+                <span>Jl. Garnet Raya, RT.003/RW.015, Kaliabang Tengah, Kec. Bekasi Utara, Kota Bks, Jawa Barat 17125, Indonesia</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-slate-950 border-t border-slate-800 text-left pt-12 pb-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-900 pb-8 mb-8 text-xs sm:text-sm text-slate-400">
+          <div class="flex items-center space-x-3">
+            <div id="gas-footer-logo-container" class="p-1 bg-white border border-slate-700 rounded-lg flex items-center justify-center w-10 h-10 overflow-hidden shadow-sm">
+              <img 
+                src="https://lh3.googleusercontent.com/d/1le978xWJjo_BmeFs4qx0r295jNmSC4j8" 
+                alt="PT. ADI LOGAM PRATAMA Logo" 
+                class="w-full h-full object-contain"
+                referrerpolicy="no-referrer"
+                onerror="this.style.display='none'; document.getElementById('gas-footer-logo-fallback').style.display='block'; document.getElementById('gas-footer-logo-container').className='p-2 bg-amber-500 text-slate-950 rounded-lg';"
+              >
+              <div id="gas-footer-logo-fallback" class="hidden">
+                <i class="fa-solid fa-fire text-slate-950"></i>
+              </div>
+            </div>
+            <div>
+              <div class="text-white font-bold uppercase leading-none">PT. ADI LOGAM PRATAMA</div>
+              <div class="text-amber-500 font-mono text-[9px] mt-0.5">MACHINING FABRICATION GENERAL TRADING & SUPPLIER</div>
+            </div>
+          </div>
+          <p>© 2026 PT. ADI LOGAM PRATAMA. Hak Cipta Dilindungi.</p>
+        </div>
+        <div class="text-[11px] font-mono text-slate-500 text-center sm:text-left flex flex-wrap gap-4 items-center">
+          <span>STANDAR PERIZINAN RI LENGKAP</span>
+          <span>•</span>
+          <span>WORKSHOP ADI LOGAM KALI ABANG BEKASI</span>
+        </div>
+      </div>
+    </footer>
+
+
+
+
+    <!-- ======================================================= -->
+    <!-- ============ QUOTATION REQUEST MOCK MODAL ============= -->
+    <!-- ======================================================= -->
+    <div id="quoteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm overflow-y-auto">
+      <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl relative overflow-hidden text-left flex flex-col">
+        
+        <!-- Modal Header -->
+        <div class="bg-slate-950 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+          <span class="text-white font-bold text-sm uppercase tracking-wide flex items-center gap-2">
+            <i class="fa-solid fa-file-invoice-dollar text-amber-500"></i>
+            MINTA PENAWARAN PRODUK
+          </span>
+          <button onclick="closeQuoteModal()" class="p-1 text-slate-400 hover:text-white rounded-lg">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Form Body -->
+        <form id="quoteForm" onsubmit="submitQuoteForm(event)" class="p-6 space-y-4">
+          
+          <div class="p-3 bg-slate-950 border border-slate-800/85 rounded-xl">
+            <span class="text-[10px] font-mono text-slate-500 block">PRODUK YANG DIPILIH</span>
+            <span class="text-white font-bold text-sm block mt-0.5" id="quoteProductName">Grating Cast Iron</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Nama Lengkap *</label>
+              <input type="text" id="custName" required placeholder="Nama Anda" class="w-full bg-slate-950 text-white text-sm border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Perusahaan / Instansi *</label>
+              <input type="text" id="custCompany" required placeholder="PT / CV Anda" class="w-full bg-slate-950 text-white text-sm border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">No. WhatsApp *</label>
+              <input type="tel" id="custPhone" required placeholder="08123456789" class="w-full bg-slate-950 text-white text-sm border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Alamat Email *</label>
+              <input type="email" id="custEmail" required placeholder="nama@email.com" class="w-full bg-slate-950 text-white text-sm border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Estimasi Kebutuhan (Pcs)</label>
+            <select id="custQty" class="w-full bg-slate-950 text-white text-sm border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none">
+              <option value="1">1 Pcs (Barang Berat)</option>
+              <option value="10" selected>10 Pcs</option>
+              <option value="50">50 Pcs</option>
+              <option value="100">100 Pcs</option>
+              <option value="500">500+ Pcs</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Unggah Lampiran Gambar/Desain (PDF, Excel, AutoCAD)</label>
+            <div class="relative flex items-center justify-center w-full border border-dashed border-slate-800 hover:border-amber-500/50 bg-slate-950 rounded-lg px-4 py-3.5 transition-all duration-200 cursor-pointer group">
+              <input type="file" id="custFile" accept=".pdf,.xls,.xlsx,.dwg,.dxf" onchange="handleFileSelected(this)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+              <div class="text-center space-y-1 pointer-events-none">
+                <i class="fa-solid fa-cloud-arrow-up text-slate-400 group-hover:text-amber-500 text-lg transition-colors" id="fileIcon"></i>
+                <p class="text-[11px] text-slate-300 font-medium" id="fileStatus">Seret & lepas atau klik untuk unggah file</p>
+                <p class="text-[9px] text-slate-500 font-mono">Format: PDF, Excel, AutoCAD (.dwg/.dxf) s.d 10MB</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Pesan Kustom Spesifikasi Teknis</label>
+            <textarea id="custNotes" rows="3" placeholder="Sebutkan material khusus, toleransi dimensi, dll..." class="w-full bg-slate-950 text-white text-xs border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none resize-none"></textarea>
+          </div>
+
+          <div class="pt-4 border-t border-slate-800 flex justify-end space-x-2 text-xs font-bold">
+            <button type="button" onclick="closeQuoteModal()" class="px-4 py-2 bg-slate-900 text-slate-300 rounded-lg hover:bg-slate-850">Batal</button>
+            <button type="submit" class="px-5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-lg shadow">Kirim Formulir</button>
+          </div>
+        </form>
+
+        <!-- Success submission pane (Initially hidden) -->
+        <div id="quoteSuccessPane" class="hidden p-10 text-center space-y-6">
+          <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 rounded-full flex items-center justify-center mx-auto text-2xl">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="space-y-2">
+            <h5 class="text-white font-bold text-lg">Permintaan Berhasil Dikirim!</h5>
+            <p class="text-slate-400 text-xs max-w-sm mx-auto leading-relaxed">
+              Terima kasih! Formulir penawaran kustom Anda berhasil dikirim ke server Google Apps Script. Tim teknis sales kami akan menghubungi Anda kembali dalam waktu maksimal 1x24 jam kerja.
+            </p>
+          </div>
+          <button onclick="closeQuoteModal()" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-lg transition-all">Tutup Halaman</button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ======================================================= -->
+    <!-- ============= LEGALITY CERTIFICATE VIEWER ============= -->
+    <!-- ======================================================= -->
+    <div id="legalityModal" onclick="closeLegalityViewerOnBg(event)" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/90 backdrop-blur-sm overflow-y-auto">
+      <div onclick="event.stopPropagation()" class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl relative overflow-hidden flex flex-col">
+        
+        <!-- Modal Header -->
+        <div class="bg-slate-950 px-5 py-4 border-b border-slate-800 flex items-center justify-between">
+          <span class="text-white font-mono text-xs uppercase tracking-wider">TAMPILAN SURAT PERIZINAN</span>
+          <button onclick="closeLegalityViewer()" class="p-1 text-slate-400 hover:text-white rounded-lg">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Scanned Paper layout -->
+        <div class="p-8 bg-amber-50/95 text-slate-900 border-8 border-double border-slate-300 m-4 rounded-xl shadow-inner text-center space-y-6 relative">
+          <!-- Absolute Close Button (BUTTON X) inside pop up -->
+          <button onclick="closeLegalityViewer()" class="absolute top-4 right-4 p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-200/50 rounded-full transition-all duration-200 z-10" aria-label="Tutup">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+          <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#000_1px,transparent_1px)] bg-[size:10px_10px] pointer-events-none"></div>
+          
+          <div class="mx-auto w-12 h-12 bg-amber-600/15 border border-amber-600/30 rounded-full flex items-center justify-center text-amber-800 text-xl">
+            <i class="fa-solid fa-scale-balanced"></i>
+          </div>
+
+          <div>
+            <div class="text-[10px] font-mono font-bold tracking-widest text-slate-700 uppercase">REPUBLIK INDONESIA</div>
+            <h4 class="text-base font-extrabold text-slate-950 border-b border-slate-400 pb-2 uppercase tracking-wide" id="legalTitle">Akta Pendirian</h4>
+          </div>
+
+          <div class="space-y-4 text-left font-sans text-xs">
+            <p class="leading-relaxed">Menyatakan dengan sah bahwa badan usaha berikut terdaftar resmi di bawah Kementerian Hukum dan perizinan Republik Indonesia:</p>
+            
+            <div class="bg-white/60 p-3 rounded border border-slate-300 space-y-1.5 font-sans">
+              <p class="flex justify-between">
+                <span class="text-slate-500 font-semibold">Nama:</span>
+                <span class="font-bold text-slate-900">PT. ADI LOGAM PRATAMA</span>
+              </p>
+              <p class="flex justify-between">
+                <span class="text-slate-500 font-semibold">Nomor:</span>
+                <span class="font-mono font-bold text-amber-800" id="legalNumber">-</span>
+              </p>
+              <p class="flex justify-between">
+                <span class="text-slate-500 font-semibold">Penerbit:</span>
+                <span class="font-semibold text-slate-900" id="legalIssuer">-</span>
+              </p>
+              <p class="flex justify-between">
+                <span class="text-slate-500 font-semibold">Status:</span>
+                <span class="font-bold text-emerald-700 flex items-center"><span class="h-1.5 w-1.5 bg-emerald-600 rounded-full mr-1.5 animate-pulse"></span>AKTIF VALID</span>
+              </p>
+            </div>
+            
+            <p class="text-[10px] text-slate-500">Representasi perizinan valid PT. Adi Logam Pratama. Seluruh hak cipta dilindungi undang-undang.</p>
+          </div>
+
+          <div class="flex justify-between items-end pt-4 border-t border-slate-300">
+            <div class="text-left">
+              <div class="w-8 h-8 bg-slate-950 bg-[repeating-linear-gradient(45deg,#ccc,#ccc_2px,#000_2px,#000_4px)]"></div>
+            </div>
+            <div class="text-right text-[9px] text-slate-500 font-mono">
+              <p id="legalYear">Jakarta, -</p>
+              <p class="font-bold text-slate-800">Direktorat Perizinan</p>
+              <p class="italic text-amber-700 font-serif">Signed Digital</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 px-5 py-3 border-t border-slate-800 flex justify-end">
+          <button onclick="closeLegalityViewer()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-lg">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ======================================================== -->
+    <!-- ============= JAVASCRIPT LOGIC ENGINE ================== -->
+    <!-- Pure custom vanilla JS for complete stability in GAS ---- -->
+    <!-- ======================================================== -->
+    <script>
+      
+      // ----------------------------------------
+      // MOBILE NAVIGATION DRAWER TOGGLER
+      // ----------------------------------------
+      function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const icon = document.getElementById('menu-icon');
+        
+        if (menu.classList.contains('hidden')) {
+          menu.classList.remove('hidden');
+          icon.className = 'fa-solid fa-xmark text-xl';
+        } else {
+          menu.classList.add('hidden');
+          icon.className = 'fa-solid fa-bars text-xl';
+        }
+      }
+
+      // ----------------------------------------
+      // ABOUT VISI-MISI TAB TOGGLER
+      // ----------------------------------------
+      function toggleAboutTab(tabId) {
+        const btnProfil = document.getElementById('tab-btn-profil');
+        const btnVisi = document.getElementById('tab-btn-visi-misi');
+        const contentProfil = document.getElementById('about-content-profil');
+        const contentVisi = document.getElementById('about-content-visi-misi');
+
+        if (tabId === 'profil') {
+          contentProfil.classList.remove('hidden');
+          contentVisi.classList.add('hidden');
+          
+          btnProfil.className = "flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md";
+          btnVisi.className = "flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg text-slate-400 hover:text-white";
+        } else {
+          contentProfil.classList.add('hidden');
+          contentVisi.classList.remove('hidden');
+          
+          btnProfil.className = "flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg text-slate-400 hover:text-white";
+          btnVisi.className = "flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md";
+        }
+      }
+
+      // ----------------------------------------
+      // PRODUCT GRID FILTER ENGINE
+      // ----------------------------------------
+      function filterProducts(category) {
+        // Toggle active states on buttons
+        const categories = ['all', 'machining', 'fabrication', 'architectural'];
+        categories.forEach(cat => {
+          const btn = document.getElementById('btn-f-' + cat);
+          if (cat === category) {
+            btn.className = "px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-amber-500 border-amber-500 text-slate-950 font-bold shadow-md";
+          } else {
+            btn.className = "px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-slate-900 border-slate-800 text-slate-400 hover:text-white";
+          }
+        });
+
+        // Filter product DOM items
+        const items = document.querySelectorAll('.product-item');
+        items.forEach(item => {
+          const itemCat = item.getAttribute('data-category');
+          if (category === 'all' || itemCat === category) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      }
+
+      // ----------------------------------------
+      // PORTFOLIO SLIDER ENGINE (FIXED & FUNCTIONAL!)
+      // ----------------------------------------
+      let currentSlide = 0;
+      const totalSlides = 3; // We have 3 slides declared above
+
+      function updateSlider() {
+        const track = document.getElementById('slider-track');
+        const percentage = -(currentSlide * 100);
+        track.style.transform = `translateX(${percentage}%)`;
+      }
+
+      function slideNext() {
+        currentSlide = (currentSlide === totalSlides - 1) ? 0 : currentSlide + 1;
+        updateSlider();
+      }
+
+      function slidePrev() {
+        currentSlide = (currentSlide === 0) ? totalSlides - 1 : currentSlide - 1;
+        updateSlider();
+      }
+
+      // Auto loop slide portfolio every 8 seconds
+      let slideTimer = setInterval(slideNext, 8000);
+      function resetSlideTimer() {
+        clearInterval(slideTimer);
+        slideTimer = setInterval(slideNext, 8000);
+      }
+      
+      // Add event listeners on slide clicks to reset timer
+      document.getElementById('slider-track').addEventListener('click', resetSlideTimer);
+
+
+
+      // ----------------------------------------
+      // QUOTATION FORM CONTROLLER & GAS BACKEND HOOK
+      // ----------------------------------------
+      let uploadedFile = {
+        data: null,
+        name: '',
+        type: ''
+      };
+
+      function handleFileSelected(input) {
+        const file = input.files[0];
+        const statusEl = document.getElementById('fileStatus');
+        const iconEl = document.getElementById('fileIcon');
+        
+        if (!file) {
+          uploadedFile = { data: null, name: '', type: '' };
+          statusEl.innerText = "Seret & lepas atau klik untuk unggah file";
+          statusEl.className = "text-[11px] text-slate-300 font-medium";
+          iconEl.className = "fa-solid fa-cloud-arrow-up text-slate-400 text-lg";
+          return;
+        }
+        
+        const allowedExtensions = /(\.pdf|\.xls|\.xlsx|\.dwg|\.dxf)$/i;
+        if (!allowedExtensions.exec(file.name)) {
+          alert('Format file tidak didukung! Harap unggah file PDF, Excel, atau AutoCAD (.dwg, .dxf).');
+          input.value = '';
+          uploadedFile = { data: null, name: '', type: '' };
+          statusEl.innerText = "Seret & lepas atau klik untuk unggah file";
+          statusEl.className = "text-[11px] text-slate-300 font-medium";
+          iconEl.className = "fa-solid fa-cloud-arrow-up text-slate-400 text-lg";
+          return;
+        }
+        
+        // Limit to 10MB
+        if (file.size > 10 * 1024 * 1024) {
+          alert('Ukuran file terlalu besar! Maksimal ukuran file adalah 10MB.');
+          input.value = '';
+          uploadedFile = { data: null, name: '', type: '' };
+          statusEl.innerText = "Seret & lepas atau klik untuk unggah file";
+          statusEl.className = "text-[11px] text-slate-300 font-medium";
+          iconEl.className = "fa-solid fa-cloud-arrow-up text-slate-400 text-lg";
+          return;
+        }
+        
+        statusEl.innerText = "Membaca file: " + file.name + "...";
+        statusEl.className = "text-[11px] text-amber-400 font-mono";
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedFile.data = e.target.result; // Base64 Data URL
+          uploadedFile.name = file.name;
+          uploadedFile.type = file.type;
+          
+          statusEl.innerText = "File siap dikirim: " + file.name + " (" + (file.size / (1024 * 1024)).toFixed(2) + " MB)";
+          statusEl.className = "text-[11px] text-emerald-400 font-medium";
+          iconEl.className = "fa-solid fa-file-circle-check text-emerald-500 text-lg";
+        };
+        
+        reader.onerror = function() {
+          alert('Gagal membaca file!');
+          input.value = '';
+          uploadedFile = { data: null, name: '', type: '' };
+          statusEl.innerText = "Seret & lepas atau klik untuk unggah file";
+          statusEl.className = "text-[11px] text-slate-300 font-medium";
+          iconEl.className = "fa-solid fa-cloud-arrow-up text-slate-400 text-lg";
+        };
+        
+        reader.readAsDataURL(file);
+      }
+
+      function openQuoteModal(prodName, category) {
+        document.getElementById('quoteProductName').innerText = prodName;
+        document.getElementById('custNotes').value = "Kami tertarik untuk memesan " + prodName + ". Silakan berikan estimasi waktu dan harga penawaran.";
+        
+        // Reset file input and state
+        const fileInput = document.getElementById('custFile');
+        if (fileInput) {
+          fileInput.value = '';
+        }
+        uploadedFile = { data: null, name: '', type: '' };
+        const statusEl = document.getElementById('fileStatus');
+        const iconEl = document.getElementById('fileIcon');
+        if (statusEl && iconEl) {
+          statusEl.innerText = "Seret & lepas atau klik untuk unggah file";
+          statusEl.className = "text-[11px] text-slate-300 font-medium";
+          iconEl.className = "fa-solid fa-cloud-arrow-up text-slate-400 text-lg";
+        }
+        
+        // Reset form states
+        document.getElementById('quoteForm').classList.remove('hidden');
+        document.getElementById('quoteSuccessPane').classList.add('hidden');
+        
+        const modal = document.getElementById('quoteModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      function closeQuoteModal() {
+        const modal = document.getElementById('quoteModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      function submitQuoteForm(e) {
+        e.preventDefault();
+        
+        const prodName = document.getElementById('quoteProductName').innerText;
+        const data = {
+          name: document.getElementById('custName').value,
+          company: document.getElementById('custCompany').value,
+          phone: document.getElementById('custPhone').value,
+          email: document.getElementById('custEmail').value,
+          quantity: document.getElementById('custQty').value,
+          notes: document.getElementById('custNotes').value + " (Produk: " + prodName + ")",
+          fileData: uploadedFile.data,
+          fileName: uploadedFile.name,
+          fileType: uploadedFile.type
+        };
+
+        // Tampilkan status sukses langsung untuk pengalaman pengguna yang instan
+        document.getElementById('quoteForm').classList.add('hidden');
+        document.getElementById('quoteSuccessPane').classList.remove('hidden');
+
+        // Construct and open mailto link for direct integration
+        const subject = encodeURIComponent("Permintaan Penawaran: " + prodName + " - " + data.company);
+        const fileInfo = uploadedFile.name ? "Nama File: " + uploadedFile.name + " (Harap lampirkan file fisik ini secara manual di email Anda)" : "Tidak ada";
+        const body = encodeURIComponent(
+          "Halo PT. Adi Logam Pratama,\n\n" +
+          "Kami tertarik untuk meminta penawaran harga untuk produk berikut:\n\n" +
+          "Nama Produk: " + prodName + "\n\n" +
+          "--- DETAIL INFORMASI KLIEN ---\n" +
+          "Nama Lengkap: " + data.name + "\n" +
+          "Perusahaan / CV: " + data.company + "\n" +
+          "No. WhatsApp: " + data.phone + "\n" +
+          "Email: " + data.email + "\n" +
+          "Estimasi Jumlah Kebutuhan: " + data.quantity + " Pcs\n" +
+          "Lampiran File: " + fileInfo + "\n\n" +
+          "--- SPESIFIKASI TAMBAHAN / CATATAN ---\n" +
+          data.notes + "\n\n" +
+          "Mohon segera berikan penawaran harga terbaik dan estimasi waktu pengerjaan.\n\n" +
+          "Terima kasih."
+        );
+
+        const mailtoUrl = "mailto:adilogampratama@yahoo.com?subject=" + subject + "&body=" + body;
+        window.location.href = mailtoUrl;
+
+        // Panggilan backend aman ke Google Apps Script (Hanya berjalan jika dideploy sebagai Web App di GAS)
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(response) {
+              console.log("Respon server Google Apps Script:", response);
+            })
+            .withFailureHandler(function(err) {
+              console.error("Gagal mengirim ke GAS:", err);
+            })
+            .submitQuotation(data);
+        }
+      }
+
+      // ----------------------------------------
+      // LEGALITY DOC VIEWER CONTROLLER
+      // ----------------------------------------
+      function openLegalityViewer(title, number, issuer, year) {
+        document.getElementById('legalTitle').innerText = title;
+        document.getElementById('legalNumber').innerText = number;
+        document.getElementById('legalIssuer').innerText = issuer;
+        
+        let city = "Klaten";
+        if (title.includes("NIB") || title.includes("Nomor Induk Berusaha") || title.includes("Akta Pendirian")) {
+          city = "Jakarta";
+        }
+        document.getElementById('legalYear').innerText = city + ", " + year;
+        
+        const modal = document.getElementById('legalityModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      function closeLegalityViewer() {
+        const modal = document.getElementById('legalityModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      function closeLegalityViewerOnBg(e) {
+        if (e.target.id === 'legalityModal') {
+          closeLegalityViewer();
+        }
+      }
+
+      // ----------------------------------------
+      // FAQ INTERACTIVE ACCORDION
+      // ----------------------------------------
+      function toggleFaq(faqId) {
+        const ans = document.getElementById('faq-ans-' + faqId);
+        const icon = document.getElementById('faq-icon-' + faqId);
+        
+        if (ans.classList.contains('hidden')) {
+          ans.classList.remove('hidden');
+          icon.className = 'fa-solid fa-chevron-up text-amber-500 transition-transform';
+        } else {
+          ans.classList.add('hidden');
+          icon.className = 'fa-solid fa-chevron-down text-slate-400 transition-transform';
+        }
+      }
+
+      // ----------------------------------------
+      // BACK TO TOP BUTTON LOGIC
+      // ----------------------------------------
+      window.addEventListener('scroll', function() {
+        const btn = document.getElementById('btn-back-to-top');
+        if (window.scrollY > 300) {
+          btn.classList.remove('opacity-0', 'translate-y-4', 'invisible', 'pointer-events-none');
+          btn.classList.add('opacity-100', 'translate-y-0', 'visible');
+        } else {
+          btn.classList.remove('opacity-100', 'translate-y-0', 'visible');
+          btn.classList.add('opacity-0', 'translate-y-4', 'invisible', 'pointer-events-none');
+        }
+      });
+
+      function scrollToTop() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+
+      // ----------------------------------------
+      // VIDEO PLAYBACK & STANDBY IMAGE LOGIC
+      // ----------------------------------------
+      const profileVideo = document.getElementById('profileVideo');
+      const videoEndedOverlay = document.getElementById('videoEndedOverlay');
+      const videoInfoOverlay = document.getElementById('videoInfoOverlay');
+      const replayButton = document.getElementById('replayButton');
+
+      if (profileVideo) {
+        profileVideo.addEventListener('ended', function() {
+          if (videoEndedOverlay) {
+            videoEndedOverlay.classList.remove('hidden');
+            setTimeout(() => {
+              videoEndedOverlay.classList.remove('opacity-0');
+              videoEndedOverlay.classList.add('opacity-100');
+            }, 10);
+          }
+          if (videoInfoOverlay) {
+            videoInfoOverlay.classList.add('hidden');
+          }
+        });
+      }
+
+      if (replayButton && profileVideo) {
+        replayButton.addEventListener('click', function() {
+          profileVideo.currentTime = 0;
+          profileVideo.play().then(() => {
+            if (videoEndedOverlay) {
+              videoEndedOverlay.classList.add('opacity-0');
+              videoEndedOverlay.classList.remove('opacity-100');
+              setTimeout(() => {
+                videoEndedOverlay.classList.add('hidden');
+              }, 500);
+            }
+            if (videoInfoOverlay) {
+              videoInfoOverlay.classList.remove('hidden');
+            }
+          }).catch(err => {
+            console.log("Video replay error:", err);
+          });
+        });
+      }
+
+    </script>
+
+    <!-- Floating Back to Top Button -->
+    <button
+      id="btn-back-to-top"
+      onclick="scrollToTop()"
+      class="fixed bottom-[72px] right-6 z-40 p-2.5 bg-slate-900/90 hover:bg-slate-800 text-amber-500 hover:text-amber-400 border border-slate-850 hover:border-amber-500/30 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center opacity-0 translate-y-4 invisible pointer-events-none"
+      title="Kembali ke Atas"
+    >
+      <i class="fa-solid fa-arrow-up text-base"></i>
+    </button>
+
+    <!-- Floating WhatsApp Service Button -->
+    <a
+      id="btn-whatsapp-floating"
+      href="https://wa.me/6282162294814?text=Halo%20PT.%20Adi%20Logam%20Pratama,%20saya%20tertarik%20dengan%20produk%20dan%20layanan%20Anda."
+      target="_blank"
+      rel="noopener noreferrer"
+      class="fixed bottom-6 right-6 z-40 flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-full shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group animate-fade-in"
+    >
+      <i class="fa-brands fa-whatsapp text-sm shrink-0"></i>
+      <span>Hubungi Kami</span>
+    </a>
+  </body>
+  </html>

@@ -1,1708 +1,1650 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Folder, 
-  FileCode, 
-  Globe, 
-  Play, 
-  Check, 
-  Copy, 
-  Download, 
-  RefreshCw, 
-  BookOpen, 
-  Sparkles, 
-  Plus, 
-  Trash, 
-  Database, 
-  Mail, 
-  FileSpreadsheet, 
-  Code, 
-  ExternalLink, 
-  Layers, 
-  Info, 
-  HelpCircle,
-  CheckCircle2,
-  Settings,
-  ChevronRight,
-  Eye
-} from 'lucide-react';
-
-// ==========================================
-// TYPES & INTERFACES
-// ==========================================
-interface GasFile {
-  name: string;
-  type: 'gs' | 'html';
-  content: string;
-}
-
-interface Template {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  category: 'Spreadsheet' | 'Web App' | 'Gmail' | 'Utility';
-  files: GasFile[];
-  initialSpreadsheetData?: Array<Record<string, any>>;
-  spreadsheetColumns?: string[];
-}
-
-// ==========================================
-// GOOGLE APPS SCRIPT TEMPLATES
-// ==========================================
-const TEMPLATES: Template[] = [
-  {
-    id: 'form-sheets',
-    title: 'Web App Registrasi & Spreadsheet',
-    category: 'Spreadsheet',
-    description: 'Aplikasi pendaftaran web app yang otomatis menyimpan entri formulir ke dalam baris Google Sheets dan mendeteksi email pengguna.',
-    icon: <FileSpreadsheet className="w-5 h-5 text-emerald-500" />,
-    spreadsheetColumns: ['Waktu (Timestamp)', 'Nama Lengkap', 'Instansi', 'Tujuan Kunjungan', 'Email Pengguna'],
-    initialSpreadsheetData: [
-      {
-        'Waktu (Timestamp)': '2026-07-09 10:05:22',
-        'Nama Lengkap': 'Ahmad Hermanto',
-        'Instansi': 'CV Teknologi Maju',
-        'Tujuan Kunjungan': 'Konsultasi Layanan Cloud',
-        'Email Pengguna': 'aminghermanto3@gmail.com'
-      },
-      {
-        'Waktu (Timestamp)': '2026-07-09 11:24:15',
-        'Nama Lengkap': 'Siti Rahmawati',
-        'Instansi': 'Universitas Indonesia',
-        'Tujuan Kunjungan': 'Penelitian Google Workspace SDK',
-        'Email Pengguna': 'siti.rahma@ui.ac.id'
-      }
-    ],
-    files: [
-      {
-        name: 'code.gs',
-        type: 'gs',
-        content: `function doGet(e) {
-  // Melayani file index.html ke publik
-  return HtmlService.createHtmlOutputFromFile('index')
-      .setTitle('Web App Registrasi Pengunjung')
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
-}
-
-/**
- * Mendapatkan email dari akun Google yang sedang aktif
- * @return {string} Alamat email pengguna
- */
-function getActiveUserEmail() {
-  try {
-    return Session.getActiveUser().getEmail() || "pengguna.demo@gmail.com";
-  } catch (err) {
-    return "Demo Mode: aminghermanto3@gmail.com";
-  }
-}
-
-/**
- * Menyimpan formulir pendaftaran ke Google Sheets
- * @param {Object} formData Data dari formulir HTML
- * @return {string} Pesan status sukses
- */
-function appendToSheet(formData) {
-  try {
-    // Membuka spreadsheet aktif (spreadsheet tempat skrip ini terikat)
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var timestamp = new Date();
-    
-    // Ambil data dari parameter objek
-    var nama = formData.nama;
-    var instansi = formData.instansi;
-    var tujuan = formData.tujuan;
-    var email = getActiveUserEmail();
-    
-    // Tambahkan baris baru ke Google Sheet
-    sheet.appendRow([timestamp, nama, instansi, tujuan, email]);
-    
-    return "Pendaftaran Sukses! Data Anda berhasil dicatat di baris " + sheet.getLastRow();
-  } catch (err) {
-    return "Gagal menyimpan data: " + err.message;
-  }
-}`
-      },
-      {
-        name: 'index.html',
-        type: 'html',
-        content: `<!DOCTYPE html>
-<html>
+  <!DOCTYPE html>
+  <html lang="id">
   <head>
-    <base target="_top">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Formulir Pengunjung</title>
-    <!-- Tailwind CSS untuk tampilan modern -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT. ADI LOGAM PRATAMA - Company Profile</title>
+    
+    <!-- Tailwind CSS CDN for modern and professional utility design -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      body { font-family: 'Segoe UI', system-ui, sans-serif; }
-    </style>
-  </head>
-  <body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-md w-full p-8 transition-all hover:shadow-2xl">
-      
-      <!-- Header -->
-      <div class="text-center mb-8">
-        <div class="bg-emerald-100 text-emerald-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <h2 class="text-2xl font-bold text-slate-800">Registrasi Kunjungan</h2>
-        <p class="text-slate-500 text-sm mt-1">Simpan data otomatis ke Google Sheets</p>
-      </div>
+    
+    <!-- FontAwesome CDN for highly secure icons (HTTPS) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Font selection: Google Fonts Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-      <!-- Info User Email -->
-      <div class="mb-6 bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-3">
-        <div class="bg-blue-100 text-blue-600 rounded-lg p-2 text-xs font-semibold">User</div>
-        <div>
-          <p class="text-xs text-slate-400 font-medium">Email Google Aktif</p>
-          <p id="user-email" class="text-sm font-semibold text-slate-700">Memuat email...</p>
-        </div>
-      </div>
-
-      <!-- Form -->
-      <form id="regForm" onsubmit="submitForm(event)" class="space-y-5">
-        <div>
-          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Nama Lengkap</label>
-          <input type="text" id="nama" name="nama" required placeholder="Masukkan nama Anda" 
-            class="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Instansi / Organisasi</label>
-          <input type="text" id="instansi" name="instansi" required placeholder="Nama instansi Anda" 
-            class="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Tujuan Kunjungan</label>
-          <select id="tujuan" name="tujuan" required
-            class="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-            <option value="Konsultasi Teknis">Konsultasi Teknis</option>
-            <option value="Kunjungan Industri">Kunjungan Industri</option>
-            <option value="Ujian / Sertifikasi">Ujian / Sertifikasi</option>
-            <option value="Keperluan Lainnya">Keperluan Lainnya</option>
-          </select>
-        </div>
-
-        <button type="submit" id="btnSubmit" 
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-[0.98]">
-          Kirim Data ke Sheet
-        </button>
-      </form>
-
-      <!-- Status Notifikasi -->
-      <div id="statusBox" class="mt-6 p-4 rounded-xl hidden text-sm font-medium transition-all duration-300"></div>
-
-    </div>
-
-    <!-- Integrasi dengan Google Apps Script Api -->
     <script>
-      // Load email otomatis saat halaman dibuka
-      window.addEventListener('load', function() {
-        google.script.run
-          .withSuccessHandler(function(email) {
-            document.getElementById('user-email').innerText = email;
-          })
-          .withFailureHandler(function(err) {
-            document.getElementById('user-email').innerText = "Gagal mengambil email: " + err.message;
-          })
-          .getActiveUserEmail();
-      });
-
-      function submitForm(e) {
-        e.preventDefault();
-        
-        var btn = document.getElementById('btnSubmit');
-        var statusBox = document.getElementById('statusBox');
-        
-        btn.disabled = true;
-        btn.innerText = "Mengirim...";
-        
-        // Buat objek payload formulir
-        var formData = {
-          nama: document.getElementById('nama').value,
-          instansi: document.getElementById('instansi').value,
-          tujuan: document.getElementById('tujuan').value
-        };
-
-        // Panggil fungsi Apps Script
-        google.script.run
-          .withSuccessHandler(function(result) {
-            btn.disabled = false;
-            btn.innerText = "Kirim Data ke Sheet";
-            
-            statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-100 block";
-            statusBox.innerText = result;
-            
-            // Reset Form
-            document.getElementById('regForm').reset();
-          })
-          .withFailureHandler(function(err) {
-            btn.disabled = false;
-            btn.innerText = "Kirim Data ke Sheet";
-            
-            statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium bg-rose-50 text-rose-800 border border-rose-100 block";
-            statusBox.innerText = "Error: " + err.message;
-          })
-          .appendToSheet(formData);
+      // Configure Tailwind to support custom industrial theme matching the React App
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            }
+          }
+        }
       }
     </script>
-  </body>
-</html>`
+    
+    <style>
+      html {
+        scroll-behavior: smooth;
       }
-    ]
-  },
-  {
-    id: 'attendance-dashboard',
-    title: 'Dashboard Kehadiran Realtime',
-    category: 'Web App',
-    description: 'Dashboard interaktif lengkap yang membaca data kehadiran dari Google Sheets, menyajikan statistik visual, dan menyediakan tombol absen cepat.',
-    icon: <Layers className="w-5 h-5 text-blue-500" />,
-    spreadsheetColumns: ['Waktu Absen', 'Nama', 'Status Kehadiran'],
-    initialSpreadsheetData: [
-      { 'Waktu Absen': '2026-07-09 07:45:00', 'Nama': 'Budi Santoso', 'Status Kehadiran': 'Hadir' },
-      { 'Waktu Absen': '2026-07-09 07:55:00', 'Nama': 'Ahmad Hermanto', 'Status Kehadiran': 'Hadir' },
-      { 'Waktu Absen': '2026-07-09 08:02:11', 'Nama': 'Riana Putri', 'Status Kehadiran': 'Terlambat' },
-      { 'Waktu Absen': '2026-07-09 08:30:00', 'Nama': 'Siti Rahma', 'Status Kehadiran': 'Sakit' },
-      { 'Waktu Absen': '2026-07-09 09:12:00', 'Nama': 'Diana Lestari', 'Status Kehadiran': 'Izin' }
-    ],
-    files: [
-      {
-        name: 'code.gs',
-        type: 'gs',
-        content: `function doGet() {
-  return HtmlService.createHtmlOutputFromFile('index')
-      .setTitle('Dashboard Absensi Karyawan')
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
-}
-
-/**
- * Membaca data absensi dari Google Sheets untuk disajikan ke Dashboard
- * @return {Array<Object>} Daftar riwayat absen
- */
-function getAttendanceData() {
-  try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var data = sheet.getDataRange().getValues();
-    
-    // Jika sheet kosong, beri data demo
-    if (data.length <= 1) {
-      return [
-        { "timestamp": "Demo 07:45", "nama": "Budi Santoso", "status": "Hadir" },
-        { "timestamp": "Demo 08:02", "nama": "Riana Putri", "status": "Terlambat" }
-      ];
-    }
-    
-    var formattedData = [];
-    // Mulai dari baris index 1 (melewati header baris 0)
-    for (var i = 1; i < data.length; i++) {
-      formattedData.push({
-        timestamp: Utilities.formatDate(new Date(data[i][0]), "GMT+7", "yyyy-MM-dd HH:mm"),
-        nama: data[i][1],
-        status: data[i][2]
-      });
-    }
-    return formattedData;
-  } catch (err) {
-    // Kembalikan data fallback jika belum di-bind ke spreadsheet asli
-    return [
-      { "timestamp": "07:45 WIB", "nama": "Budi Santoso", "status": "Hadir" },
-      { "timestamp": "07:55 WIB", "nama": "Ahmad Hermanto", "status": "Hadir" },
-      { "timestamp": "08:02 WIB", "nama": "Riana Putri", "status": "Terlambat" },
-      { "timestamp": "08:15 WIB", "nama": "Siti Rahma", "status": "Sakit" },
-      { "timestamp": "09:12 WIB", "nama": "Diana Lestari", "status": "Izin" }
-    ];
-  }
-}
-
-/**
- * Menyimpan data absensi baru
- * @param {string} nama Nama pegawai
- * @param {string} status Pilihan status (Hadir/Sakit/Izin/Terlambat)
- * @return {Object} Status kembalian sukses
- */
-function submitPresence(nama, status) {
-  try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var timestamp = new Date();
-    sheet.appendRow([timestamp, nama, status]);
-    return { success: true, message: "Absen berhasil dicatat!" };
-  } catch (err) {
-    return { success: false, message: err.message };
-  }
-}`
-      },
-      {
-        name: 'index.html',
-        type: 'html',
-        content: `<!DOCTYPE html>
-<html>
-  <head>
-    <base target="_top">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard Kehadiran</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+      /* Simple smooth transitions for slide transitions */
+      .slide-container {
+        transition: transform 0.5s ease-in-out;
+      }
+      .selection-amber::selection {
+        background-color: #f59e0b;
+        color: #0f172a;
+      }
+    </style>
   </head>
-  <body class="bg-slate-900 text-slate-100 min-h-screen p-6">
-    <div class="max-w-4xl mx-auto space-y-6">
-      
-      <!-- Top Bar -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
-        <div>
-          <h1 class="text-2xl font-bold text-blue-400">Dashboard Absensi Pegawai</h1>
-          <p class="text-slate-400 text-sm">Update Real-Time Terkoneksi Google Sheets</p>
-        </div>
-        <button onclick="refreshData()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17" /></svg>
-          Segarkan Data
-        </button>
-      </div>
+  <body class="bg-slate-950 text-slate-100 font-sans selection-amber">
 
-      <!-- Stats Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 text-center">
-          <p class="text-xs text-slate-400 font-medium">Hadir</p>
-          <p id="stat-hadir" class="text-3xl font-extrabold text-emerald-400 mt-1">0</p>
-        </div>
-        <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 text-center">
-          <p class="text-xs text-slate-400 font-medium">Sakit</p>
-          <p id="stat-sakit" class="text-3xl font-extrabold text-amber-400 mt-1">0</p>
-        </div>
-        <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 text-center">
-          <p class="text-xs text-slate-400 font-medium">Izin</p>
-          <p id="stat-izin" class="text-3xl font-extrabold text-blue-400 mt-1">0</p>
-        </div>
-        <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 text-center">
-          <p class="text-xs text-slate-400 font-medium">Terlambat</p>
-          <p id="stat-terlambat" class="text-3xl font-extrabold text-rose-400 mt-1">0</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Form Absen Cepat -->
-        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-4 shadow-lg h-fit">
-          <h3 class="text-lg font-bold text-slate-200">Absen Cepat Baru</h3>
-          <div class="space-y-3">
-            <div>
-              <label class="text-xs text-slate-400 block mb-1">Nama Pegawai</label>
-              <input type="text" id="absen-nama" placeholder="Tulis nama pegawai" 
-                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-blue-500">
+    <!-- ================= HEADER SECTION ================= -->
+    <header class="fixed top-0 left-0 right-0 z-40 bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-slate-800 py-4 transition-all duration-300">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between">
+          
+          <!-- Logo Brand Group -->
+          <a href="#beranda" class="flex items-center space-x-3">
+            <div id="gas-logo-container" class="p-1 bg-white border border-slate-200 rounded-lg flex items-center justify-center w-11 h-11 overflow-hidden shadow-sm">
+              <img 
+                src="https://lh3.googleusercontent.com/d/1le978xWJjo_BmeFs4qx0r295jNmSC4j8" 
+                alt="PT. ADI LOGAM PRATAMA Logo" 
+                class="w-full h-full object-contain"
+                referrerpolicy="no-referrer"
+                onerror="this.style.display='none'; document.getElementById('gas-logo-fallback').style.display='block'; document.getElementById('gas-logo-container').className='p-2.5 bg-gradient-to-br from-amber-500 to-red-600 rounded-lg flex items-center justify-center';"
+              >
+              <div id="gas-logo-fallback" class="hidden">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"></path>
+                </svg>
+              </div>
             </div>
             <div>
-              <label class="text-xs text-slate-400 block mb-1">Status Kehadiran</label>
-              <select id="absen-status" 
-                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-blue-500">
-                <option value="Hadir">Hadir</option>
-                <option value="Sakit">Sakit</option>
-                <option value="Izin">Izin</option>
-                <option value="Terlambat">Terlambat</option>
-              </select>
+              <div class="text-white font-extrabold tracking-wider text-sm sm:text-base leading-tight">
+                PT. ADI LOGAM PRATAMA
+              </div>
+              <div class="text-amber-500 font-mono text-[9px] sm:text-[10px] tracking-widest uppercase">
+                MACHINING FABRICATION & CONTRACTOR</span>
+              </div>
             </div>
-            <button onclick="submitNewAbsen()" id="btnAbsen" class="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold py-2.5 rounded-xl transition-all">
-              Catat Kehadiran
+          </a>
+
+          <!-- Desktop Navigation Items -->
+          <nav class="hidden lg:flex items-center space-x-1">
+            <a href="#beranda" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">BERANDA</a>
+            <a href="#tentang-kami" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">TENTANG KAMI</a>
+            <a href="#produk" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">PRODUK</a>
+            <a href="#jasa" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">JASA</a>
+            <a href="#legalitas" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">LEGALITAS</a>
+            <a href="#customer" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">CUSTOMER</a>
+            <a href="#tanya-jawab" class="px-3 py-2 text-xs xl:text-sm font-semibold tracking-wide text-slate-300 hover:text-white rounded-md transition-all">TANYA JAWAB</a>
+          </nav>
+
+
+
+          <!-- Mobile Hamburguer Button -->
+          <div class="flex lg:hidden items-center space-x-2">
+            <button onclick="toggleMobileMenu()" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg focus:outline-none">
+              <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Drawer -->
+      <div class="hidden lg:hidden w-full bg-slate-900 border-t border-slate-800 mt-4 px-4 py-3 space-y-1" id="mobile-menu">
+        <a href="#beranda" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">BERANDA</a>
+        <a href="#tentang-kami" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">TENTANG KAMI</a>
+        <a href="#produk" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">PRODUK</a>
+        <a href="#jasa" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">JASA</a>
+        <a href="#legalitas" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">LEGALITAS</a>
+        <a href="#customer" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">CUSTOMER</a>
+        <a href="#tanya-jawab" onclick="toggleMobileMenu()" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white rounded-md">TANYA JAWAB</a>
+
+      </div>
+    </header>
+
+    <!-- ================= BERANDA (HERO) SECTION ================= -->
+    <section id="beranda" class="relative min-h-screen pt-28 pb-16 flex items-center bg-slate-950 overflow-hidden">
+      <div class="absolute inset-0 opacity-15">
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#334155_1px,transparent_1px),linear-gradient(to_bottom,#334155_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full filter blur-[100px]"></div>
+      </div>
+
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <!-- Text Left column -->
+          <div class="lg:col-span-7 space-y-8 text-left z-10">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full text-amber-400 text-xs font-mono tracking-wider uppercase">
+              <i class="fa-solid fa-fire text-amber-500 animate-pulse"></i>
+              <span>SPESIALIS MACHINING FABRIKASI & PRECISSION PART</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-none">
+              <span class="block text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-500 to-red-600">
+                PT. ADI LOGAM
+              </span>
+              <span class="block mt-2">PRATAMA</span>
+            </h1>
+
+            <p class="text-slate-300 text-base sm:text-lg md:text-xl max-w-xl font-sans leading-relaxed">
+              Menghasilkan produk unggulan dengan tingkat presisi tinggi sehingga menjamin kualitas serta menawarkan solusi yang efektif dan efisien.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
+              <a href="#produk" class="flex items-center justify-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-extrabold text-sm rounded-lg shadow-lg">
+                <span>Lihat Katalog Produk</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+
+            <!-- Mini Stats -->
+            <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800">
+              <div class="flex items-center space-x-2.5">
+                <div class="p-1.5 bg-slate-800 rounded-lg text-amber-500">
+                  <i class="fa-solid fa-shield-halved text-lg"></i>
+                </div>
+                <div>
+                  <div class="text-white text-xs sm:text-sm font-bold">SNI</div>
+                  <div className="text-slate-400 text-[10px]">Terstandardisasi</div>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2.5">
+                <div class="p-1.5 bg-slate-800 rounded-lg text-amber-500">
+                  <i class="fa-solid fa-award text-lg"></i>
+                </div>
+                <div>
+                  <div class="text-white text-xs sm:text-sm font-bold">Sejak 2017</div>
+                  <div className="text-slate-400 text-[10px]">Berpengalaman</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual Image right column -->
+          <div class="lg:col-span-5 relative flex justify-center items-center z-10">
+            <div class="relative w-full max-w-md aspect-square bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden group">
+              <div class="absolute inset-0 overflow-hidden">
+                <video
+                  id="profileVideo"
+                  autoplay
+                  muted
+                  playsinline
+                  poster="https://lh3.googleusercontent.com/d/1USaSlMunScJOyiPa1XcG_uKzE6fyWQ2r"
+                  class="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-all duration-500"
+                >
+                  <source src="https://lh3.googleusercontent.com/d/1m3gOn3ZxSS_f3qVxEh34UAH4OkI9eoQd" type="video/mp4">
+                  <source src="https://drive.google.com/uc?export=download&id=1m3gOn3ZxSS_f3qVxEh34UAH4OkI9eoQd" type="video/mp4">
+                </video>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/25 to-transparent pointer-events-none"></div>
+              
+              <!-- Standby Image Overlay -->
+              <div id="videoEndedOverlay" class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6 z-20 hidden transition-opacity duration-500 opacity-0">
+                <img 
+                  src="https://lh3.googleusercontent.com/d/1USaSlMunScJOyiPa1XcG_uKzE6fyWQ2r" 
+                  alt="Standby" 
+                  class="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
+                  onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600';"
+                />
+                <div class="absolute inset-0 bg-slate-950/60 pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col items-center space-y-4">
+                  <button 
+                    id="replayButton"
+                    class="p-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer"
+                    title="Putar Kembali"
+                  >
+                    <i class="fa-solid fa-rotate-left text-lg"></i>
+                  </button>
+                  <div>
+                    <h4 class="text-white font-extrabold text-sm tracking-wide uppercase">Video Selesai Diputar</h4>
+                    <p class="text-slate-300 text-xs mt-1 px-4 leading-relaxed">Klik tombol untuk memutar kembali video profil PT. Adi Logam Pratama</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Video Info Bottom Overlay -->
+              <div id="videoInfoOverlay" class="absolute bottom-6 left-6 right-6 text-left pointer-events-none">
+                <div class="flex items-center space-x-2 mb-2">
+                  <span class="px-2.5 py-0.5 bg-amber-500 text-slate-950 font-mono text-[9px] font-extrabold uppercase rounded tracking-wider">AHLINYA MACHINING & PABRIKASI</span>
+                  <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                </div>
+                <p class="text-slate-300 text-xs leading-relaxed font-medium">Part presisi tinggi dikerjakan dengan tenaga ahli.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TENTANG KAMI SECTION ================= -->
+    <section id="tentang-kami" class="py-20 bg-slate-900 border-t border-slate-800 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">TENTANG KAMI</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Mengenal PT. Adi Logam Pratama</h3>
+          <p class="mt-4 text-slate-200 text-sm sm:text-base font-semibold">Perusahaan dengan segenap karyawannya bangga bekerja di bidang ini, dimana mereka dapat tumbuh dan memberikan kinerja yang terbaik, dan secara terus menerus berupaya untuk mencapai kesuksesan.</p>
+        </div>
+
+        <!-- Tab Buttons for Section toggle -->
+        <div class="flex justify-center mb-12">
+          <div class="inline-flex p-1 bg-slate-950 rounded-xl border border-slate-800">
+            <button onclick="toggleAboutTab('profil')" id="tab-btn-profil" class="flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md">
+              <i class="fa-solid fa-building"></i>
+              <span>Profil Perusahaan</span>
+            </button>
+            <button onclick="toggleAboutTab('visi-misi')" id="tab-btn-visi-misi" class="flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg text-slate-400 hover:text-white">
+              <i class="fa-solid fa-bullseye"></i>
+              <span>Visi & Misi</span>
             </button>
           </div>
         </div>
 
-        <!-- Tabel Riwayat Kehadiran -->
-        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-lg md:col-span-2 space-y-4">
-          <h3 class="text-lg font-bold text-slate-200">Riwayat Presensi Hari Ini</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-slate-400">
-              <thead class="text-xs text-slate-400 uppercase bg-slate-900 border-b border-slate-700">
-                <tr>
-                  <th class="py-3 px-4">Nama</th>
-                  <th class="py-3 px-4">Status</th>
-                  <th class="py-3 px-4">Waktu</th>
-                </tr>
-              </thead>
-              <tbody id="attendance-rows" class="divide-y divide-slate-700/50">
-                <!-- Data dimasukkan via JS -->
-              </tbody>
-            </table>
+        <!-- Profil Perusahaan Tab Content -->
+        <div id="about-content-profil" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-left">
+          <div class="lg:col-span-7 space-y-6">
+            <div class="flex items-center space-x-3 text-amber-500 font-mono text-sm">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+              <span>SEJARAH & KOMITMEN</span>
+            </div>
+            <h4 class="text-2xl font-bold text-white tracking-tight">Machining fabrication General Trading & Supplier</h4>
+            <p class="text-slate-100 text-sm sm:text-base leading-relaxed font-semibold">
+              PT. Adi Logam Pratama didirikan di Bekasi pada tanggal 21 Agustus tahun 2017, merupakan perusahaan General Trading Lokal yang bergerak di bidang MACHINING, FABRICATION, CONSTRUCTION, ELECTRICAL, PRECISSION PARTS & CIVIL.
+            </p>
+            <p class="text-slate-100 text-sm sm:text-base leading-relaxed font-semibold">
+              Dengan pesatnya perkembangan dunia industri di Indonesia menjadi tantangan bagi setiap perusahaan untuk mengembangkan potensinya. 
+              PT. Adi Logam Pratama hadir tumbuh dan berkembang sebagai sebuah perusahaan yang menawarkan keunggulan di bidang jasa konstruksi Sipil dan Fabrikasi dengan terus berimprovisasi guna memenuhi kebutuhan dan permintaan dunia industri.
+            </p>
+            <p class="text-slate-100 text-sm sm:text-base leading-relaxed font-semibold">
+              Di bidang Machining, perusahaan ini terus menjawab setiap tantangan dengan menghasilkan produk unggulan dengan tingkat presisi yang tinggi sehingga menjamin kualitas serta menawarkan solusi yang efektif dan efisien.
+            </p>
+
+            <!-- Small Grid Stats -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-slate-800">
+              <div>
+                <div class="text-3xl font-extrabold text-amber-500">9+</div>
+                <div class="text-slate-200 text-xs mt-1 font-bold">Tahun Berdiri</div>
+              </div>
+              <div>
+                <div class="text-3xl font-extrabold text-amber-500">500+</div>
+                <div class="text-slate-200 text-xs mt-1 font-bold">Project Selesai</div>
+              </div>
+              <div>
+                <div class="text-3xl font-extrabold text-amber-500">40+</div>
+                <div class="text-slate-200 text-xs mt-1 font-bold">Klien Korporasi</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+              <h5 class="text-white font-bold text-lg mb-4 flex items-center space-x-2">
+                <i class="fa-solid fa-map-location-dot text-amber-500"></i>
+                <span>Kantor & Pabrik Utama</span>
+              </h5>
+              <div class="space-y-4">
+                <div class="p-4 bg-slate-900 rounded-xl border border-slate-800/50">
+                  <div class="text-xs font-mono text-amber-500 mb-1">ALAMAT UTAMA</div>
+                  <p class="text-white text-sm font-semibold">Jl. Garnet Raya, RT.003/RW.015, Kaliabang Tengah, Kec. Bekasi Utara, Kota Bks, Jawa Barat 17125, Indonesia</p>
+                </div>
+                <div class="p-4 bg-slate-900 rounded-xl border border-slate-800/50">
+                  <div class="text-xs font-mono text-amber-500 mb-2 flex items-center gap-1">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>GOOGLE MAPS</span>
+                  </div>
+                  <div class="w-full h-48 rounded-xl overflow-hidden border border-slate-800/80">
+                    <iframe 
+                      title="Google Maps Location"
+                      src="https://maps.google.com/maps?q=-6.1956,106.9934(PT.%20Adi%20Logam%20Pratama)&z=17&output=embed" 
+                      class="w-full h-full border-0" 
+                      allowfullscreen="" 
+                      loading="lazy" 
+                      referrerpolicy="no-referrer">
+                    </iframe>
+                  </div>
+                </div>
+                <div class="p-4 bg-slate-900 rounded-xl border border-slate-800/50">
+                  <div class="text-xs font-mono text-amber-500 mb-1">KONTAK LAYANAN</div>
+                  <div class="space-y-1.5 text-sm text-white">
+                    <p><span class="text-slate-400">Telp Kantor:</span> <a href="tel:02188383789" class="font-semibold text-white hover:text-amber-500 transition-colors">(021) 88383789</a></p>
+                    <p><span class="text-slate-400">WhatsApp:</span> <a href="https://wa.me/6282162294814" target="_blank" rel="noopener noreferrer" class="font-semibold text-white hover:text-amber-500 transition-colors underline decoration-slate-700">+62 821 6229 4814 (Layanan Chat)</a></p>
+                    <p><span class="text-slate-400">Email:</span> <a href="mailto:adilogampratama@yahoo.com" class="font-semibold text-white hover:text-amber-500 transition-colors underline decoration-slate-700">adilogampratama@yahoo.com</a></p>
+                  </div>
+                </div>
+                <div class="p-4 bg-amber-500/5 rounded-xl border border-amber-500/20 flex items-center space-x-3 text-left">
+                  <div class="p-2 bg-amber-500/20 text-amber-500 rounded-lg">
+                    <i class="fa-solid fa-certificate"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-xs font-bold uppercase">Sertifikasi Legal</div>
+                    <p class="text-[11px] text-slate-400">Memiliki SNI, NIB Resmi, & Bersertifikat.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
+        <!-- Visi & Misi Tab Content (Initially hidden) -->
+        <div id="about-content-visi-misi" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+          <div class="p-8 bg-slate-950 border border-slate-800 rounded-2xl flex flex-col justify-between hover:border-amber-500/30 transition-all">
+            <div>
+              <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 border border-amber-500/25 text-amber-500 text-xl">
+                <i class="fa-solid fa-compass"></i>
+              </div>
+              <h4 class="text-2xl font-extrabold text-white mb-4">VISI KAMI</h4>
+              <p class="text-slate-100 text-base leading-relaxed italic font-semibold">
+                &ldquo;Menjadi Perusahaan Yang Memberi Total Quality Services dan Berdaya Saing Tinggi.&rdquo;
+              </p>
+            </div>
+            <div class="mt-8 pt-6 border-t border-slate-800 text-[10px] font-mono text-slate-500">PT. ADI LOGAM PRATAMA</div>
+          </div>
+
+          <div class="p-8 bg-slate-950 border border-slate-800 rounded-2xl hover:border-amber-500/30 transition-all">
+            <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 border border-amber-500/25 text-amber-500 text-xl">
+              <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <h4 class="text-2xl font-extrabold text-white mb-6">MISI KAMI</h4>
+            <ul class="space-y-4">
+              <li class="flex items-start space-x-3 text-sm text-slate-100 font-semibold">
+                <i class="fa-solid fa-circle-check text-amber-500 mt-1 shrink-0"></i>
+                <span>Menghasilkan produk machining fabrikasi bermutu tinggi yang memenuhi spesifikasi teknis pelanggan.</span>
+              </li>
+              <li class="flex items-start space-x-3 text-sm text-slate-100 font-semibold">
+                <i class="fa-solid fa-circle-check text-amber-500 mt-1 shrink-0"></i>
+                <span>Mengedepankan kepuasan pelanggan dengan Memberikan pelayanan terbaik dan menghasilkan produk Sesuai dengan permintaan pelanggan.</span>
+              </li>
+              <li class="flex items-start space-x-3 text-sm text-slate-100 font-semibold">
+                <i class="fa-solid fa-circle-check text-amber-500 mt-1 shrink-0"></i>
+                <span>Menjamin keselamatan kerja (K3) dan menerapkan proses produksi yang ramah lingkungan.</span>
+              </li>
+              <li class="flex items-start space-x-3 text-sm text-slate-100 font-semibold">
+                <i class="fa-solid fa-circle-check text-amber-500 mt-1 shrink-0"></i>
+                <span>Membangun kemitraan jangka panjang yang saling menguntungkan dengan pelanggan dan pemasok.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= PRODUK SECTION ================= -->
+    <section id="produk" class="py-20 bg-slate-950 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">KATALOG PRODUK</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Produk Unggulan Machining & Fabrikasi</h3>
+          <p class="mt-4 text-slate-200 text-sm sm:text-base font-semibold">Kami menghadirkan solusi manufaktur terintegrasi melalui lini produk unggulan bermutu tinggi. Mengombinasikan presisi teknologi machining (bubut, milling, CNC) dengan ketangguhan konstruksi fabrication (pengelasan, pemotongan, 
+            dan perakitan logam), kami siap memenuhi kebutuhan komponen industri Anda. Setiap produk dirancang khusus (custom-made) sesuai spesifikasi teknis yang akurat, tahan lama, dan berstandar standar industri global demi menjaga efisiensi operasional bisnis Anda.</p>
+        </div>
+
+        <!-- Categories Filter Buttons -->
+        <div class="flex flex-wrap justify-center gap-2 mb-10">
+          <button onclick="filterProducts('all')" id="btn-f-all" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-amber-500 border-amber-500 text-slate-950 font-bold shadow-md">SEMUA</button>
+          <button onclick="filterProducts('machining')" id="btn-f-machining" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-slate-900 border-slate-800 text-slate-400 hover:text-white">MACHINING</button>
+          <button onclick="filterProducts('fabrication')" id="btn-f-fabrication" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-slate-900 border-slate-800 text-slate-400 hover:text-white">FABRIKASI / KONTRUKSI</button>
+          <button onclick="filterProducts('architectural')" id="btn-f-architectural" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-slate-900 border-slate-800 text-slate-400 hover:text-white">INSTALATION</button>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="products-grid">
+
+          <!-- Product 2 -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="fabrication">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1SSAeYo34lDa9BgHvoSid3TYceVdLxNYz" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=600';" alt="LAUNCHER RECEIVER" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">FABRIKASI / KONTRUKSI</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">LAUNCHER RECEIVER</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Sistem Launcher & Receiver Pigging presisi untuk keperluan pembersihan, inspeksi, dan pemeliharaan pipa penyalur gas dan minyak bumi.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Carbon Steel ASTM A106 Gr. B / API 5L Gr. B</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Standard Desain: ASME Sec. VIII Div. 1 & ASME B31.8</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Tekanan Operasi: ANSI Class 150 s.d 600</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Fitur: Quick Opening Closure dengan interlocking system</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">STANDAR ASME</span>
+                <button onclick="openQuoteModal('LAUNCHER RECEIVER', 'fabrication')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 2b (Safety Filter) -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="fabrication">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1TAY6I_7OKp_y-Ehlvp4iMn7a_PBSzFBA" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600';" alt="SAFETY FILTER" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">FABRIKASI / KONTRUKSI</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">SAFETY FILTER</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Filter penyaring berkeamanan tinggi (Simplex/Duplex Strainer) untuk memproteksi peralatan downstream dari kontaminasi partikel padat pada aliran fluida.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Carbon Steel / Stainless Steel SUS 304/316</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Element Filter: Stainless Steel Wire Mesh s.d 5 Mikron</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Sambungan: Flange ANSI / JIS Standard</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Aplikasi: Penyaringan BBM, pelumas, zat kimia, air industri</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">PRESISI TINGGI</span>
+                <button onclick="openQuoteModal('SAFETY FILTER', 'fabrication')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 2c (Vessel Tank) -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="fabrication">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/17HHutY0BtDpqjhVKa_FRaGgw3MKmTykD" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&q=80&w=600';" alt="VESSEL TANK" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">FABRIKASI / KONTRUKSI</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">VESSEL TANK</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Tangki bejana tekan (Pressure Vessel) berkapasitas besar untuk penyimpanan gas, udara bertekanan, uap panas, atau fluida cair industri.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Pressure Vessel Plate ASTM A516 Gr. 70</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Standar Fabrikasi: ASME Section VIII Division 1</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Kapasitas & Tekanan: Kustomisasi sesuai kebutuhan operasional</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Sertifikasi: Depnaker (SIA - Surat Izin Alat) resmi</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">BEJANA TEKAN</span>
+                <button onclick="openQuoteModal('VESSEL TANK', 'fabrication')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 9 (Housing Gear Box) -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="machining">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1-tSlPmD56nRjLcSNWCUO5IGzDv-cFISh" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1537462715879-360eeb61a0bc?auto=format&fit=crop&q=80&w=600';" alt="HOUSING GEAR BOX" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">MACHINING</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">HOUSING GEAR BOX</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Rumah roda gigi (Housing Gearbox) presisi kustom yang dirancang untuk meredam getaran dan melindungi transmisi gigi mekanis pada mesin industri berat.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Cast Iron FC 250 / Ductile Iron FCD 500</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Toleransi: Standar presisi tinggi ISO H7</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Fitur: Struktur kokoh dengan ketahanan termal tinggi</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Aplikasi: Gearbox conveyor, mesin pabrik gula, semen, tambang</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">PRESISI ISO H7</span>
+                <button onclick="openQuoteModal('HOUSING GEAR BOX', 'machining')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 10 (Shaft & Worm Gear) -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="machining">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1r37JJm0rSCc9QVS2wGCjGfsiYolcdoiV" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&q=80&w=600';" alt="SHAFT & WORM GEAR" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">MACHINING</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">SHAFT & WORM GEAR</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Poros (Shaft) dan roda gigi cacing (Worm Gear) dengan tingkat presisi tinggi untuk sistem transmisi torsi besar dengan pereduksi putaran yang halus.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Baja Paduan SCM440 / Kuningan Bronze</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Proses: CNC Turning, Hobbing, & Hardening (HRC 55-60)</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Modul: Kustomisasi sesuai gambar teknik</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Keunggulan: Gesekan rendah, efisiensi transfer daya tinggi</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">HARDENED GEAR</span>
+                <button onclick="openQuoteModal('SHAFT & WORM GEAR', 'machining')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 11 (Spare Part Mesin Industri) -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="machining">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1bwUU4oyBPrDtNEMQjQtFYk8VhzjLNNhO" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=600';" alt="SPARE PART MESIN INDUSTRI" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">MACHINING</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">SPARE PART MESIN INDUSTRI</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Pembuatan suku cadang mesin industri (spare parts) kustom presisi tinggi sesuai sampel atau gambar kerja untuk menjamin kelangsungan lini produksi.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Baja Karbon, Baja Paduan, Stainless Steel, Kuningan, Nylon</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Mesin: CNC Lathe, CNC Milling, Manual Lathe, Radial Drilling</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Akurasi Dimensi: Mencapai toleransi micron (≤ 0.01 mm)</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Layanan: Reverse engineering dari contoh part yang aus/rusak</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">PRESISI MIKRON</span>
+                <button onclick="openQuoteModal('SPARE PART MESIN INDUSTRI', 'machining')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 3 -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="fabrication">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1hiBegoSc6xquziLSjdEwRNiq94bz88c5" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&q=80&w=600';" alt="Renovasi Gedung Lt.2" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">FABRIKASI / KONTRUKSI</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">Pembangunan Gedung Utama 2 Lantai</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">pembangunan gedung 2 lantai menggunakan kombinasi struktur baja WF kokoh dan pengerjaan interior sipil berstandar tinggi.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Struktur Utama: Baja WF & H-Beam SNI</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Pekerjaan Sipil: Dinding Partisi Gypsum, Plafond, Pengecatan</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Sistem MEP: Instalasi Listrik, Penerangan, & AC</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Standar Keselamatan: K3 Konstruksi Sipil & Fabrikasi</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">KONSTRUKSI SIPIL</span>
+                <button onclick="openQuoteModal('Renovasi Gedung Lt.2', 'fabrication')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 4 -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="architectural">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1IGX6KTPBea3QnjbXASDaBs0FQ5JDYl_l" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=600';" alt="PIPE INSTALATION - ISO TANK TO PRODUCTION" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">INSTALATION</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">PIPE INSTALATION - ISO TANK TO PRODUCTION</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Instalasi Pipa ISO Tank to Produksi PT Wihadil dengan standar tinggi.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Stainless Steel SUS 316L</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Aplikasi: Distribusi Liquid Chemical</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Standar: ANSI Class 150 / ASME</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">PRESISI TINGGI</span>
+                <button onclick="openQuoteModal('PIPE INSTALATION - ISO TANK TO PRODUCTION', 'architectural')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 5 -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="architectural">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/1gR1we1D19SkZbjjkPgXrwbdWtOMSvdy7" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1535813547-99c456a41d4a?auto=format&fit=crop&q=80&w=600';" alt="PIPE INSTALATION - PRODUCTION LINE SYSTEM" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">INSTALATION</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">PIPE INSTALATION - PRODUCTION LINE SYSTEM</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Sistem perpipaan terintegrasi untuk jalur distribusi bahan baku produksi.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Carbon Steel ASTM A106 Gr. B</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Proses: TIG/GTAW & SMAW Welding</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Uji Mutu: Hydrostatic Test & Radiography 100%</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">STANDAR AWS</span>
+                <button onclick="openQuoteModal('PIPE INSTALATION - PRODUCTION LINE SYSTEM', 'architectural')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 6 -->
+          <div class="product-item group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:border-amber-500/30 transition-all duration-300" data-category="architectural">
+            <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <img src="https://lh3.googleusercontent.com/d/12MKhzXac---xhxPqWPm3KnSuXDDxNuCB" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581092162613-f97393457128?auto=format&fit=crop&q=80&w=600';" alt="PIPE INSTALATION - UTILITY SYSTEM" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" referrerpolicy="no-referrer">
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/95 border border-slate-800 text-[10px] font-mono text-amber-500 font-extrabold uppercase tracking-wider rounded shadow-md z-10">INSTALATION</span>
+              
+              <!-- Absolute bottom product name label overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent/0 p-5 pt-16 z-10">
+                <h4 class="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_6px_rgba(0,0,0,1)] group-hover:text-amber-400 transition-colors">PIPE INSTALATION - UTILITY SYSTEM</h4>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow justify-between text-left">
+              <div class="space-y-3">
+                <p class="text-slate-200 text-xs leading-relaxed font-semibold">Instalasi pipa utilitas penunjang mesin produksi utama pabrik.</p>
+                <div class="pt-2">
+                  <div class="text-[9px] font-mono text-slate-400 tracking-wider uppercase mb-1 font-bold">SPESIFIKASI</div>
+                  <ul class="space-y-1 text-slate-100 text-[11px] font-bold">
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Bahan: Galvanized Steel Pipe (GIP)</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Aplikasi: Steam & High Pressure Water</li>
+                    <li><span class="inline-block h-1 w-1 bg-amber-500 rounded-full mr-1.5"></span>Sertifikasi: Depnaker & Standard K3</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="pt-5 border-t border-slate-800/60 mt-4 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">STANDARD K3</span>
+                <button onclick="openQuoteModal('PIPE INSTALATION - UTILITY SYSTEM', 'architectural')" class="px-4 py-2 bg-slate-950 hover:bg-amber-500 text-amber-500 hover:text-slate-950 border border-amber-500/20 hover:border-amber-500 font-bold text-xs rounded-lg transition-all">Minta Penawaran</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= JASA SECTION ================= -->
+    <section id="jasa" class="py-20 bg-slate-900 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">LAYANAN JASA</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Layanan Proses Terintegritas</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+          
+          <!-- Jasa 1 -->
+          <div class="p-8 bg-slate-950 border border-slate-800 rounded-2xl hover:border-amber-500/30 transition-all flex flex-col justify-between">
+            <div class="space-y-4">
+              <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 text-xl">
+                <i class="fa-solid fa-gears animate-pulse"></i>
+              </div>
+              <h4 class="text-xl font-extrabold text-white">Proses Machining</h4>
+              <p class="text-slate-200 text-sm leading-relaxed font-semibold">Machining adalah proses memotong dan membentuk material mentah (logam/plastik) menggunakan mesin presisi menjadi komponen jadi yang akurat.</p>
+              <ul class="space-y-2 pt-2 text-xs sm:text-sm text-slate-100 font-semibold">
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i><strong>Bubut (Turning):</strong> Membuat komponen berbentuk bulat/silinder (contoh: as, baut, poros).</li>
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i><strong>Frais (Milling):</strong> Menyayat permukaan datar dan membuat alur (contoh: roda gigi, balok mesin).</li>
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i><strong>CNC Machining:</strong> Proses bubut dan frais otomatis menggunakan komputer untuk hasil super cepat, presisi, dan rumit.</li>
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i><strong>Drilling & Boring:</strong> Membuat dan memperbesar lubang pada material.</li>
+              </ul>
+            </div>
+            <div class="pt-4 border-t border-slate-900 mt-6 text-[10px] font-mono text-slate-500">Solusi cepat untuk pembuatan suku cadang kustom dan spare part presisi.</div>
+          </div>
+
+          <!-- Jasa 2 -->
+          <div class="p-8 bg-slate-950 border border-slate-800 rounded-2xl hover:border-amber-500/30 transition-all flex flex-col justify-between">
+            <div class="space-y-4">
+              <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 text-xl">
+                <i class="fa-solid fa-hammer"></i>
+              </div>
+              <h4 class="text-xl font-extrabold text-white">Fabrikasi Struktur Baja</h4>
+              <p class="text-slate-200 text-sm leading-relaxed font-semibold">Pemotongan profil, perakitan, dan pengelasan plat baja berat bersertifikat standard pengelasan AWS.</p>
+              <ul class="space-y-2 pt-2 text-xs sm:text-sm text-slate-100 font-semibold">
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Gantry CNC Plasma Cutting presisi</li>
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Juru Las (Welder) bersertifikat depnaker</li>
+                <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Shot blasting pembersih karat pra cat</li>
+              </ul>
+            </div>
+            <div class="pt-4 border-t border-slate-900 mt-6 text-[10px] font-mono text-slate-500 uppercase">STANDAR AWS</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LEGALITAS SECTION ================= -->
+    <section id="legalitas" class="py-20 bg-slate-950 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">KEPATUHAN ADMINISTRASI</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Legalitas Perusahaan Resmi</h3>
+          <p class="mt-4 text-slate-200 text-sm sm:text-base font-semibold">PT. Adi Logam Pratama merupakan entitas hukum perseroan terbatas sah yang melengkapi seluruh aspek persyaratan administrasi BUMN dan B2B.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 text-left items-start">
+          <div class="lg:col-span-5 space-y-6">
+            <div class="flex items-center space-x-3 text-amber-500 font-mono text-xs">
+              <i class="fa-solid fa-scale-balanced"></i>
+              <span>DOKUMEN RESMI</span>
+            </div>
+            <h4 class="text-2xl font-bold text-white tracking-tight">Kredibilitas Hukum Terjamin untuk Kemitraan Pemerintah</h4>
+            <p class="text-slate-200 text-sm leading-relaxed font-semibold">Setiap dokumen telah didaftarkan dalam sistem resmi pemerintah Republik Indonesia. Kami senantiasa taat pajak dan menerbitkan E-Faktur PPN resmi untuk menunjang keamanan audit keuangan pelanggan korporat.</p>
+            
+            <div class="space-y-3 pt-2">
+              <div class="flex items-center space-x-2 text-xs text-slate-100 font-bold">
+                <i class="fa-solid fa-circle-check text-amber-500"></i>
+                <span>Memiliki NIB KBLI Pengolahan Logam</span>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Doc 1 -->
+            <div onclick="openLegalityViewer('Akta Pendirian Perusahaan', 'No. 52 tanggal 28-08-2022 (pembaruan)', 'Notaris Monica Lidwina,S.H.,M.K.n', '2022')" class="p-5 bg-slate-900 border border-slate-800 rounded-xl hover:border-amber-500/30 cursor-pointer transition-all group">
+              <div class="w-10 h-10 bg-slate-950 rounded-lg flex items-center justify-center border border-slate-800 mb-4 group-hover:text-amber-500 transition-colors">
+                <i class="fa-solid fa-file-invoice text-slate-400 group-hover:text-amber-500"></i>
+              </div>
+              <h5 class="text-white font-bold text-sm">Akta Pendirian Perusahaan</h5>
+              <p class="text-slate-200 font-mono text-[11px] mt-1 select-all font-semibold">No. 52 tanggal 28-08-2022 (pembaruan)</p>
+              <div class="pt-4 border-t border-slate-800 mt-4 flex items-center justify-between text-[10px] text-slate-500">
+                <span>Notaris Monica Lidwina</span>
+                <span class="text-amber-500 font-bold">Detail <i class="fa-solid fa-chevron-right ml-1"></i></span>
+              </div>
+            </div>
+
+            <!-- Doc 2 -->
+            <div onclick="openLegalityViewer('Nomor Induk Berusaha (NIB)', '2510220054409', 'Lembaga OSS Kementerian Investasi', '2022')" class="p-5 bg-slate-900 border border-slate-800 rounded-xl hover:border-amber-500/30 cursor-pointer transition-all group">
+              <div class="w-10 h-10 bg-slate-950 rounded-lg flex items-center justify-center border border-slate-800 mb-4 group-hover:text-amber-500 transition-colors">
+                <i class="fa-solid fa-file-contract text-slate-400 group-hover:text-amber-500"></i>
+              </div>
+              <h5 class="text-white font-bold text-sm">Nomor Induk Berusaha (NIB)</h5>
+              <p class="text-slate-200 font-mono text-[11px] mt-1 select-all font-semibold">2510220054409</p>
+              <div class="pt-4 border-t border-slate-800 mt-4 flex items-center justify-between text-[10px] text-slate-500">
+                <span>Kementerian Investasi</span>
+                <span class="text-amber-500 font-bold">Detail <i class="fa-solid fa-chevron-right ml-1"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= CUSTOMER & PORTOFOLIO SECTION ================= -->
+    <!-- CAROUSEL FIXED AND FULLY WORKING INSIDE GOOGLE APPS SCRIPT -->
+    <section id="customer" class="py-20 bg-slate-900 border-t border-slate-800 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">CUSTOMER & PORTOFOLIO</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Kemitraan & Proyek Sukses</h3>
+          <p class="mt-4 text-slate-200 text-sm sm:text-base font-semibold">Telah dipercaya oleh berbagai perusahaan terkemuka.</p>
+        </div>
+
+        <!-- PORTFOLIO SLIDESHOW - PURE JAVASCRIPT SLIDER (No jQuery or complex CSS framework dependency) -->
+        <div class="mb-16">
+          <div class="flex items-center justify-between mb-4 text-left">
+            <span class="text-amber-500 font-mono text-xs tracking-widest"><i class="fa-solid fa-briefcase"></i> SLIDE GALERI PROYEK</span>
+            <div class="flex items-center space-x-2">
+              <button onclick="slidePrev()" class="p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-lg transition-all shadow-md">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button onclick="slideNext()" class="p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-lg transition-all shadow-md">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Slider outer wrap -->
+          <div class="bg-slate-950 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl relative">
+            <div class="relative w-full overflow-hidden min-h-[400px]">
+              
+              <!-- Slides Container with flex -->
+              <div class="flex slide-container w-full h-full" id="slider-track" style="transform: translateX(0%);">
+                
+                <!-- Slide 1 -->
+                <div class="w-full shrink-0 grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                  <div class="lg:col-span-6 relative aspect-video lg:aspect-auto overflow-hidden bg-slate-900 flex justify-center items-center">
+                    <img src="https://lh3.googleusercontent.com/d/1VAPddltLxfe34F1s6pX23gsdVKKW5Kdm" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=800';" alt="Fabrikasi & Instalasi Safety Filter" class="w-full h-full object-cover opacity-80" referrerpolicy="no-referrer">
+                  </div>
+                  <div class="lg:col-span-6 p-8 sm:p-10 flex flex-col justify-between text-left space-y-6">
+                    <div class="space-y-4">
+                      <div class="flex items-center gap-4 text-xs font-mono text-slate-200 font-semibold">
+                        <span class="text-amber-500"><i class="fa-solid fa-calendar mr-1"></i> 2024</span>
+                        <span><i class="fa-solid fa-map-pin mr-1 text-red-500"></i> Bekasi, Jawa Barat</span>
+                      </div>
+                      <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Fabrikasi & Instalasi Safety Filter</h4>
+                      <p class="text-slate-200 text-sm leading-relaxed font-semibold">Fabrikasi presisi tinggi dan instalasi sistem safety filter berbahan stainless steel khusus untuk menyaring material halus pada lini produksi industri.</p>
+                      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">PELANGGAN</span>
+                          <span class="text-white text-xs font-bold block mt-1">PT Andalan Furnindo</span>
+                        </div>
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">MATERIAL</span>
+                          <span class="text-amber-500 text-xs font-mono font-bold block mt-1">Stainless Steel SUS304 / 316L</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="w-full shrink-0 grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                  <div class="lg:col-span-6 relative aspect-video lg:aspect-auto overflow-hidden bg-slate-900 flex justify-center items-center">
+                    <img src="https://lh3.googleusercontent.com/d/1OnQ8uQEYmNy9ze9Evcx3HG1ST-BJXbi4" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&q=80&w=800';" alt="Machining & Assy Sandwich Valve" class="w-full h-full object-cover opacity-80" referrerpolicy="no-referrer">
+                  </div>
+                  <div class="lg:col-span-6 p-8 sm:p-10 flex flex-col justify-between text-left space-y-6">
+                    <div class="space-y-4">
+                      <div class="flex items-center gap-4 text-xs font-mono text-slate-200 font-semibold">
+                        <span class="text-amber-500"><i class="fa-solid fa-calendar mr-1"></i> 2023</span>
+                        <span><i class="fa-solid fa-map-pin mr-1 text-red-500"></i> Bekasi, Jawa Barat</span>
+                      </div>
+                      <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Machining & Assy Sandwich Valve</h4>
+                      <p class="text-slate-200 text-sm leading-relaxed font-semibold">Proses pengerjaan pemesinan (machining) bubut presisi dan perakitan (assembly) komponen katup sandwich tekanan tinggi untuk sistem tapping gas.</p>
+                      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">PELANGGAN</span>
+                          <span class="text-white text-xs font-bold block mt-1">PT. Farrel Internusa Pratama</span>
+                        </div>
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">MATERIAL</span>
+                          <span class="text-amber-500 text-xs font-mono font-bold block mt-1">Carbon Steel ASTM A516 Gr.70</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="w-full shrink-0 grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                  <div class="lg:col-span-6 relative aspect-video lg:aspect-auto overflow-hidden bg-slate-900 flex justify-center items-center">
+                    <img src="https://lh3.googleusercontent.com/d/1Jp2g4cifpHSUnqP8PfXDX69JErFedj3d" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&q=80&w=800';" alt="Pembangunan Kantor Lt. 2 ( Renovasi )" class="w-full h-full object-cover opacity-80" referrerpolicy="no-referrer">
+                  </div>
+                  <div class="lg:col-span-6 p-8 sm:p-10 flex flex-col justify-between text-left space-y-6">
+                    <div class="space-y-4">
+                      <div class="flex items-center gap-4 text-xs font-mono text-slate-200 font-semibold">
+                        <span class="text-amber-500"><i class="fa-solid fa-calendar mr-1"></i> 2025</span>
+                        <span><i class="fa-solid fa-map-pin mr-1 text-red-500"></i> Cilegon, Banten</span>
+                      </div>
+                      <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Pembangunan Kantor Utama</h4>
+                      <p class="text-slate-200 text-sm leading-relaxed font-semibold">Pekerjaan sipil gedung kantor 2 leading-tightantai, mencakup instalasi struktur baja WF, dinding partisi gypsum, instalasi kelistrikan (MEP), plafond, serta pengerjaan interior dengan presisi tinggi.</p>
+                      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">PELANGGAN</span>
+                          <span class="text-white text-xs font-bold block mt-1">PT Wihadil</span>
+                        </div>
+                        <div>
+                          <span class="block text-[10px] font-mono text-slate-500 uppercase">KATEGORI</span>
+                          <span class="text-amber-500 text-xs font-mono font-bold block mt-1">Sipil & Konstruksi Baja</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customers logos grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="p-6 bg-slate-950 border border-slate-800 rounded-xl flex flex-col justify-center items-center text-center">
+            <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center font-extrabold text-white text-sm mb-3">WIKA</div>
+            <div class="text-white text-xs font-bold leading-tight line-clamp-1">PT. WIJAYA KARYA Tbk</div>
+          </div>
+          <div class="p-6 bg-slate-950 border border-slate-800 rounded-xl flex flex-col justify-center items-center text-center">
+            <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center font-extrabold text-white text-sm mb-3">ADHI</div>
+            <div class="text-white text-xs font-bold leading-tight line-clamp-1">PT. ADHI KARYA Tbk</div>
+          </div>
+          <div class="p-6 bg-slate-950 border border-slate-800 rounded-xl flex flex-col justify-center items-center text-center">
+            <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center font-extrabold text-white text-sm mb-3">SIG</div>
+            <div class="text-white text-xs font-bold leading-tight line-clamp-1">PT. SEMEN INDONESIA Tbk</div>
+          </div>
+          <div class="p-6 bg-slate-950 border border-slate-800 rounded-xl flex flex-col justify-center items-center text-center">
+            <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center font-extrabold text-white text-sm mb-3">WIHADIL</div>
+            <div class="text-white text-xs font-bold leading-tight line-clamp-1">PT. WIHADIL</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= TANYA JAWAB (FAQ) SECTION ================= -->
+    <section id="tanya-jawab" class="py-20 bg-slate-950 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-amber-500 font-mono text-xs tracking-widest uppercase mb-3">FAQ</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Tanya Jawab (FAQ)</h3>
+          <p class="mt-4 text-slate-200 text-sm sm:text-base font-semibold">Informasi seputar proses pemesanan khusus, pengiriman, dan kendali mutu material pengecoran.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 text-left items-start">
+          
+          <!-- Accordion Questions Left column -->
+          <div class="lg:col-span-7 space-y-4">
+            <!-- Item 1 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+              <button onclick="toggleFaq('faq-1')" class="w-full text-left px-6 py-4 flex items-center justify-between text-white font-bold text-sm sm:text-base">
+                <span>Bagaimana alur melakukan pemesanan produk ?</span>
+                <i class="fa-solid fa-chevron-down text-slate-400 transition-transform" id="faq-icon-faq-1"></i>
+              </button>
+              <div id="faq-ans-faq-1" class="hidden px-6 pb-5 pt-1 text-slate-100 text-xs sm:text-sm leading-relaxed border-t border-slate-800/40 bg-slate-950/20 font-semibold">
+                Pelanggan dapat mengirimkan gambar teknis CAD atau sampel fisik. Engineer kami akan mereview dan redraw,eksekusi proses lalu melakukan pengecekan sebelum pengiriman akhir.
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+              <button onclick="toggleFaq('faq-2')" class="w-full text-left px-6 py-4 flex items-center justify-between text-white font-bold text-sm sm:text-base">
+                <span>Apakah produk dilengkapi sertifikat material?</span>
+                <i class="fa-solid fa-chevron-down text-slate-400 transition-transform" id="faq-icon-faq-2"></i>
+              </button>
+              <div id="faq-ans-faq-2" class="hidden px-6 pb-5 pt-1 text-slate-100 text-xs sm:text-sm leading-relaxed border-t border-slate-800/40 bg-slate-950/20 font-semibold">
+                Ya, setiap penggunaan material selalu disertakan millsheet material langsung dari supplier material terpercaya kami sesuai permintaan.
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact details Right column -->
+          <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-6">
+            <h4 class="text-white font-bold text-lg mb-2">Butuh Bantuan Lebih Lanjut?</h4>
+            <p class="text-slate-200 text-xs leading-relaxed mb-6 font-semibold">Konsultasikan kebutuhan Anda kepada kepala teknis kami.</p>
+            
+            <div class="space-y-4 text-xs text-slate-100 font-semibold">
+              <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-phone text-amber-500 text-base shrink-0"></i>
+                <a href="https://wa.me/6282162294814" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors font-semibold underline decoration-slate-700">+62 821 6229 4814 (WhatsApp)</a>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-envelope text-amber-500 text-base shrink-0"></i>
+                <a href="mailto:adilogampratama@yahoo.com" class="hover:text-amber-500 transition-colors font-semibold underline decoration-slate-700">adilogampratama@yahoo.com</a>
+              </div>
+              <div class="flex items-start space-x-3">
+                <i class="fa-solid fa-map-location-dot text-amber-500 text-base shrink-0 mt-0.5"></i>
+                <span>Jl. Garnet Raya, RT.003/RW.015, Kaliabang Tengah, Kec. Bekasi Utara, Kota Bks, Jawa Barat 17125, Indonesia</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-slate-950 border-t border-slate-800 text-left pt-12 pb-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-900 pb-8 mb-8 text-xs sm:text-sm text-slate-400">
+          <div class="flex items-center space-x-3">
+            <div id="gas-footer-logo-container" class="p-1 bg-white border border-slate-700 rounded-lg flex items-center justify-center w-10 h-10 overflow-hidden shadow-sm">
+              <img 
+                src="https://lh3.googleusercontent.com/d/1le978xWJjo_BmeFs4qx0r295jNmSC4j8" 
+                alt="PT. ADI LOGAM PRATAMA Logo" 
+                class="w-full h-full object-contain"
+                referrerpolicy="no-referrer"
+                onerror="this.style.display='none'; document.getElementById('gas-footer-logo-fallback').style.display='block'; document.getElementById('gas-footer-logo-container').className='p-2 bg-amber-500 text-slate-950 rounded-lg';"
+              >
+              <div id="gas-footer-logo-fallback" class="hidden">
+                <i class="fa-solid fa-fire text-slate-950"></i>
+              </div>
+            </div>
+            <div>
+              <div class="text-white font-bold uppercase leading-none">PT. ADI LOGAM PRATAMA</div>
+              <div class="text-amber-500 font-mono text-[9px] mt-0.5">MACHINING FABRICATION GENERAL TRADING & SUPPLIER</div>
+            </div>
+          </div>
+          <p>© 2026 PT. ADI LOGAM PRATAMA. Hak Cipta Dilindungi.</p>
+        </div>
+        <div class="text-[11px] font-mono text-slate-500 text-center sm:text-left flex flex-wrap gap-4 items-center">
+          <span>STANDAR PERIZINAN RI LENGKAP</span>
+          <span>•</span>
+          <span>WORKSHOP ADI LOGAM KALI ABANG BEKASI</span>
+        </div>
+      </div>
+    </footer>
+
+
+
+
+    <!-- ======================================================= -->
+    <!-- ============ QUOTATION REQUEST MOCK MODAL ============= -->
+    <!-- ======================================================= -->
+    <div id="quoteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm overflow-y-auto">
+      <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl relative overflow-hidden text-left flex flex-col">
+        
+        <!-- Modal Header -->
+        <div class="bg-slate-950 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+          <span class="text-white font-bold text-sm uppercase tracking-wide flex items-center gap-2">
+            <i class="fa-solid fa-file-invoice-dollar text-amber-500"></i>
+            MINTA PENAWARAN PRODUK
+          </span>
+          <button onclick="closeQuoteModal()" class="p-1 text-slate-400 hover:text-white rounded-lg">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Form Body -->
+        <form id="quoteForm" onsubmit="submitQuoteForm(event)" class="p-6 space-y-4">
+          
+          <div class="p-3 bg-slate-950 border border-slate-800/85 rounded-xl">
+            <span class="text-[10px] font-mono text-slate-500 block">PRODUK YANG DIPILIH</span>
+            <span class="text-white font-bold text-sm block mt-0.5" id="quoteProductName">Grating Cast Iron</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Nama Lengkap *</label>
+              <input type="text" id="custName" required placeholder="Nama Anda" class="w-full bg-slate-950 text-white text-sm border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Perusahaan / Instansi *</label>
+              <input type="text" id="custCompany" required placeholder="PT / CV Anda" class="w-full bg-slate-950 text-white text-sm border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">No. WhatsApp *</label>
+              <input type="tel" id="custPhone" required placeholder="08123456789" class="w-full bg-slate-950 text-white text-sm border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Alamat Email *</label>
+              <input type="email" id="custEmail" required placeholder="nama@email.com" class="w-full bg-slate-950 text-white text-sm border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Estimasi Kebutuhan (Pcs)</label>
+            <select id="custQty" class="w-full bg-slate-950 text-white text-sm border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none">
+              <option value="1">1 Pcs (Barang Berat)</option>
+              <option value="10" selected>10 Pcs</option>
+              <option value="50">50 Pcs</option>
+              <option value="100">100 Pcs</option>
+              <option value="500">500+ Pcs</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Unggah Lampiran Gambar/Desain (PDF, Excel, AutoCAD)</label>
+            <div class="relative flex items-center justify-center w-full border border-dashed border-slate-800 hover:border-amber-500/50 bg-slate-950 rounded-lg px-4 py-3.5 transition-all duration-200 cursor-pointer group">
+              <input type="file" id="custFile" accept=".pdf,.xls,.xlsx,.dwg,.dxf" onchange="handleFileSelected(this)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+              <div class="text-center space-y-1 pointer-events-none">
+                <i class="fa-solid fa-cloud-arrow-up text-slate-400 group-hover:text-amber-500 text-lg transition-colors" id="fileIcon"></i>
+                <p class="text-[11px] text-slate-300 font-medium" id="fileStatus">Seret & lepas atau klik untuk unggah file</p>
+                <p class="text-[9px] text-slate-500 font-mono">Format: PDF, Excel, AutoCAD (.dwg/.dxf) s.d 10MB</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 text-[11px] font-mono uppercase mb-1">Pesan Kustom Spesifikasi Teknis</label>
+            <textarea id="custNotes" rows="3" placeholder="Sebutkan material khusus, toleransi dimensi, dll..." class="w-full bg-slate-950 text-white text-xs border border-slate-800 focus:border-amber-500 rounded-lg px-3 py-2 outline-none resize-none"></textarea>
+          </div>
+
+          <div class="pt-4 border-t border-slate-800 flex justify-end space-x-2 text-xs font-bold">
+            <button type="button" onclick="closeQuoteModal()" class="px-4 py-2 bg-slate-900 text-slate-300 rounded-lg hover:bg-slate-850">Batal</button>
+            <button type="submit" class="px-5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-lg shadow">Kirim Formulir</button>
+          </div>
+        </form>
+
+        <!-- Success submission pane (Initially hidden) -->
+        <div id="quoteSuccessPane" class="hidden p-10 text-center space-y-6">
+          <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 rounded-full flex items-center justify-center mx-auto text-2xl">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="space-y-2">
+            <h5 class="text-white font-bold text-lg">Permintaan Berhasil Dikirim!</h5>
+            <p class="text-slate-400 text-xs max-w-sm mx-auto leading-relaxed">
+              Terima kasih! Formulir penawaran kustom Anda berhasil dikirim ke server Google Apps Script. Tim teknis sales kami akan menghubungi Anda kembali dalam waktu maksimal 1x24 jam kerja.
+            </p>
+          </div>
+          <button onclick="closeQuoteModal()" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-lg transition-all">Tutup Halaman</button>
+        </div>
+
+      </div>
     </div>
 
+
+    <!-- ======================================================= -->
+    <!-- ============= LEGALITY CERTIFICATE VIEWER ============= -->
+    <!-- ======================================================= -->
+    <div id="legalityModal" onclick="closeLegalityViewerOnBg(event)" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/90 backdrop-blur-sm overflow-y-auto">
+      <div onclick="event.stopPropagation()" class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl relative overflow-hidden flex flex-col">
+        
+        <!-- Modal Header -->
+        <div class="bg-slate-950 px-5 py-4 border-b border-slate-800 flex items-center justify-between">
+          <span class="text-white font-mono text-xs uppercase tracking-wider">TAMPILAN SURAT PERIZINAN</span>
+          <button onclick="closeLegalityViewer()" class="p-1 text-slate-400 hover:text-white rounded-lg">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Scanned Paper layout -->
+        <div class="p-8 bg-amber-50/95 text-slate-900 border-8 border-double border-slate-300 m-4 rounded-xl shadow-inner text-center space-y-6 relative">
+          <!-- Absolute Close Button (BUTTON X) inside pop up -->
+          <button onclick="closeLegalityViewer()" class="absolute top-4 right-4 p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-200/50 rounded-full transition-all duration-200 z-10" aria-label="Tutup">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+          <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#000_1px,transparent_1px)] bg-[size:10px_10px] pointer-events-none"></div>
+          
+          <div class="mx-auto w-12 h-12 bg-amber-600/15 border border-amber-600/30 rounded-full flex items-center justify-center text-amber-800 text-xl">
+            <i class="fa-solid fa-scale-balanced"></i>
+          </div>
+
+          <div>
+            <div class="text-[10px] font-mono font-bold tracking-widest text-slate-700 uppercase">REPUBLIK INDONESIA</div>
+            <h4 class="text-base font-extrabold text-slate-950 border-b border-slate-400 pb-2 uppercase tracking-wide" id="legalTitle">Akta Pendirian</h4>
+          </div>
+
+          <div class="space-y-4 text-left font-sans text-xs">
+            <p class="leading-relaxed">Menyatakan dengan sah bahwa badan usaha berikut terdaftar resmi di bawah Kementerian Hukum dan perizinan Republik Indonesia:</p>
+            
+            <div class="bg-white/60 p-3 rounded border border-slate-300 space-y-1.5 font-sans">
+              <p class="flex justify-between">
+                <span class="text-slate-500 font-semibold">Nama:</span>
+                <span class="font-bold text-slate-900">PT. ADI LOGAM PRATAMA</span>
+              </p>
+              <p class="flex justify-between">
+                <span class="text-slate-500 font-semibold">Nomor:</span>
+                <span class="font-mono font-bold text-amber-800" id="legalNumber">-</span>
+              </p>
+              <p class="flex justify-between">
+                <span class="text-slate-500 font-semibold">Penerbit:</span>
+                <span class="font-semibold text-slate-900" id="legalIssuer">-</span>
+              </p>
+              <p class="flex justify-between">
+                <span class="text-slate-500 font-semibold">Status:</span>
+                <span class="font-bold text-emerald-700 flex items-center"><span class="h-1.5 w-1.5 bg-emerald-600 rounded-full mr-1.5 animate-pulse"></span>AKTIF VALID</span>
+              </p>
+            </div>
+            
+            <p class="text-[10px] text-slate-500">Representasi perizinan valid PT. Adi Logam Pratama. Seluruh hak cipta dilindungi undang-undang.</p>
+          </div>
+
+          <div class="flex justify-between items-end pt-4 border-t border-slate-300">
+            <div class="text-left">
+              <div class="w-8 h-8 bg-slate-950 bg-[repeating-linear-gradient(45deg,#ccc,#ccc_2px,#000_2px,#000_4px)]"></div>
+            </div>
+            <div class="text-right text-[9px] text-slate-500 font-mono">
+              <p id="legalYear">Jakarta, -</p>
+              <p class="font-bold text-slate-800">Direktorat Perizinan</p>
+              <p class="italic text-amber-700 font-serif">Signed Digital</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 px-5 py-3 border-t border-slate-800 flex justify-end">
+          <button onclick="closeLegalityViewer()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-lg">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ======================================================== -->
+    <!-- ============= JAVASCRIPT LOGIC ENGINE ================== -->
+    <!-- Pure custom vanilla JS for complete stability in GAS ---- -->
+    <!-- ======================================================== -->
     <script>
-      window.addEventListener('load', refreshData);
-
-      function refreshData() {
-        var rows = document.getElementById('attendance-rows');
-        rows.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-slate-500">Menghubungkan ke Sheets...</td></tr>';
+      
+      // ----------------------------------------
+      // MOBILE NAVIGATION DRAWER TOGGLER
+      // ----------------------------------------
+      function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const icon = document.getElementById('menu-icon');
         
-        google.script.run
-          .withSuccessHandler(function(data) {
-            renderData(data);
-          })
-          .withFailureHandler(function(err) {
-            rows.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-rose-400">Gagal memuat data: ' + err.message + '</td></tr>';
-          })
-          .getAttendanceData();
+        if (menu.classList.contains('hidden')) {
+          menu.classList.remove('hidden');
+          icon.className = 'fa-solid fa-xmark text-xl';
+        } else {
+          menu.classList.add('hidden');
+          icon.className = 'fa-solid fa-bars text-xl';
+        }
       }
 
-      function renderData(data) {
-        var rows = document.getElementById('attendance-rows');
-        rows.innerHTML = '';
-        
-        var counts = { Hadir: 0, Sakit: 0, Izin: 0, Terlambat: 0 };
-        
-        data.forEach(function(row) {
-          // Hitung Statistik
-          if (counts[row.status] !== undefined) {
-            counts[row.status]++;
+      // ----------------------------------------
+      // ABOUT VISI-MISI TAB TOGGLER
+      // ----------------------------------------
+      function toggleAboutTab(tabId) {
+        const btnProfil = document.getElementById('tab-btn-profil');
+        const btnVisi = document.getElementById('tab-btn-visi-misi');
+        const contentProfil = document.getElementById('about-content-profil');
+        const contentVisi = document.getElementById('about-content-visi-misi');
+
+        if (tabId === 'profil') {
+          contentProfil.classList.remove('hidden');
+          contentVisi.classList.add('hidden');
+          
+          btnProfil.className = "flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md";
+          btnVisi.className = "flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg text-slate-400 hover:text-white";
+        } else {
+          contentProfil.classList.add('hidden');
+          contentVisi.classList.remove('hidden');
+          
+          btnProfil.className = "flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg text-slate-400 hover:text-white";
+          btnVisi.className = "flex items-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md";
+        }
+      }
+
+      // ----------------------------------------
+      // PRODUCT GRID FILTER ENGINE
+      // ----------------------------------------
+      function filterProducts(category) {
+        // Toggle active states on buttons
+        const categories = ['all', 'machining', 'fabrication', 'architectural'];
+        categories.forEach(cat => {
+          const btn = document.getElementById('btn-f-' + cat);
+          if (cat === category) {
+            btn.className = "px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-amber-500 border-amber-500 text-slate-950 font-bold shadow-md";
+          } else {
+            btn.className = "px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border bg-slate-900 border-slate-800 text-slate-400 hover:text-white";
           }
-          
-          var badgeClass = "bg-slate-700 text-slate-300";
-          if (row.status === "Hadir") badgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-800/50";
-          else if (row.status === "Sakit") badgeClass = "bg-amber-950 text-amber-400 border border-amber-800/50";
-          else if (row.status === "Izin") badgeClass = "bg-blue-950 text-blue-400 border border-blue-800/50";
-          else if (row.status === "Terlambat") badgeClass = "bg-rose-950 text-rose-400 border border-rose-800/50";
-          
-          var tr = document.createElement('tr');
-          tr.className = "hover:bg-slate-700/20";
-          tr.innerHTML = '<td class="py-3 px-4 font-semibold text-slate-200">' + row.nama + '</td>' +
-                         '<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs font-medium ' + badgeClass + '">' + row.status + '</span></td>' +
-                         '<td class="py-3 px-4 text-xs font-mono text-slate-500">' + row.timestamp + '</td>';
-          rows.appendChild(tr);
         });
-        
-        // Update Stats UI
-        document.getElementById('stat-hadir').innerText = counts.Hadir;
-        document.getElementById('stat-sakit').innerText = counts.Sakit;
-        document.getElementById('stat-izin').innerText = counts.Izin;
-        document.getElementById('stat-terlambat').innerText = counts.Terlambat;
+
+        // Filter product DOM items
+        const items = document.querySelectorAll('.product-item');
+        items.forEach(item => {
+          const itemCat = item.getAttribute('data-category');
+          if (category === 'all' || itemCat === category) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        });
       }
 
-      function submitNewAbsen() {
-        var nama = document.getElementById('absen-nama').value;
-        var status = document.getElementById('absen-status').value;
-        var btn = document.getElementById('btnAbsen');
+      // ----------------------------------------
+      // PORTFOLIO SLIDER ENGINE (FIXED & FUNCTIONAL!)
+      // ----------------------------------------
+      let currentSlide = 0;
+      const totalSlides = 3; // We have 3 slides declared above
+
+      function updateSlider() {
+        const track = document.getElementById('slider-track');
+        const percentage = -(currentSlide * 100);
+        track.style.transform = `translateX(${percentage}%)`;
+      }
+
+      function slideNext() {
+        currentSlide = (currentSlide === totalSlides - 1) ? 0 : currentSlide + 1;
+        updateSlider();
+      }
+
+      function slidePrev() {
+        currentSlide = (currentSlide === 0) ? totalSlides - 1 : currentSlide - 1;
+        updateSlider();
+      }
+
+      // Auto loop slide portfolio every 8 seconds
+      let slideTimer = setInterval(slideNext, 8000);
+      function resetSlideTimer() {
+        clearInterval(slideTimer);
+        slideTimer = setInterval(slideNext, 8000);
+      }
+      
+      // Add event listeners on slide clicks to reset timer
+      document.getElementById('slider-track').addEventListener('click', resetSlideTimer);
+
+
+
+      // ----------------------------------------
+      // QUOTATION FORM CONTROLLER & GAS BACKEND HOOK
+      // ----------------------------------------
+      let uploadedFile = {
+        data: null,
+        name: '',
+        type: ''
+      };
+
+      function handleFileSelected(input) {
+        const file = input.files[0];
+        const statusEl = document.getElementById('fileStatus');
+        const iconEl = document.getElementById('fileIcon');
         
-        if (!nama) {
-          alert('Nama tidak boleh kosong!');
+        if (!file) {
+          uploadedFile = { data: null, name: '', type: '' };
+          statusEl.innerText = "Seret & lepas atau klik untuk unggah file";
+          statusEl.className = "text-[11px] text-slate-300 font-medium";
+          iconEl.className = "fa-solid fa-cloud-arrow-up text-slate-400 text-lg";
           return;
         }
         
-        btn.disabled = true;
-        btn.innerText = "Mencatat...";
+        const allowedExtensions = /(\.pdf|\.xls|\.xlsx|\.dwg|\.dxf)$/i;
+        if (!allowedExtensions.exec(file.name)) {
+          alert('Format file tidak didukung! Harap unggah file PDF, Excel, atau AutoCAD (.dwg, .dxf).');
+          input.value = '';
+          uploadedFile = { data: null, name: '', type: '' };
+          statusEl.innerText = "Seret & lepas atau klik untuk unggah file";
+          statusEl.className = "text-[11px] text-slate-300 font-medium";
+          iconEl.className = "fa-solid fa-cloud-arrow-up text-slate-400 text-lg";
+          return;
+        }
         
-        google.script.run
-          .withSuccessHandler(function(res) {
-            btn.disabled = false;
-            btn.innerText = "Catat Kehadiran";
-            document.getElementById('absen-nama').value = '';
-            refreshData();
-          })
-          .withFailureHandler(function(err) {
-            btn.disabled = false;
-            btn.innerText = "Catat Kehadiran";
-            alert("Error: " + err.message);
-          })
-          .submitPresence(nama, status);
-      }
-    </script>
-  </body>
-</html>`
-      }
-    ]
-  },
-  {
-    id: 'gmail-responder',
-    title: 'Gmail Auto-Responder Bot',
-    category: 'Gmail',
-    description: 'Skrip pemicu waktu (Time-driven trigger) Google Apps Script untuk otomatis memeriksa email masuk dan mengirim balasan template.',
-    icon: <Mail className="w-5 h-5 text-red-500" />,
-    spreadsheetColumns: ['Waktu Pemicu', 'Email Pengirim', 'Status Respons', 'Pesan Pengirim'],
-    initialSpreadsheetData: [
-      { 'Waktu Pemicu': '2026-07-09 15:30:10', 'Email Pengirim': 'client@example.com', 'Status Respons': 'Terkirim', 'Pesan Pengirim': 'TanyaApp: Tanya cara pendaftaran' },
-      { 'Waktu Pemicu': '2026-07-09 16:45:22', 'Email Pengirim': 'test-user@domain.com', 'Status Respons': 'Terkirim', 'Pesan Pengirim': 'TanyaApp: Bagaimana cara integrasi?' }
-    ],
-    files: [
-      {
-        name: 'code.gs',
-        type: 'gs',
-        content: `/**
- * Skrip Utama - Jadwalkan pemicu waktu (Time-driven trigger) 
- * misalnya setiap 10 menit sekali untuk memeriksa inbox otomatis.
- */
-function autoReplyInbox() {
-  var triggerKeyword = "TanyaApp"; // Kata kunci di subjek email
-  var labelName = "Auto-Replied";
-  
-  // Mencari label di Gmail, jika tidak ada maka buat baru
-  var label = GmailApp.getUserLabelByName(labelName);
-  if (!label) {
-    label = GmailApp.createLabel(labelName);
-  }
-  
-  // Cari utas (threads) email yang belum dibaca dan mengandung kata kunci di subjek
-  var searchQuery = "is:unread subject:" + triggerKeyword;
-  var threads = GmailApp.search(searchQuery);
-  
-  // Membuka log sheet untuk dokumentasi (opsional)
-  var sheet;
-  try {
-    sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  } catch (e) {
-    Logger.log("Tidak terikat ke spreadsheet, melewati logging.");
-  }
-  
-  for (var i = 0; i < threads.length; i++) {
-    var messages = threads[i].getMessages();
-    var lastMessage = messages[messages.length - 1];
-    var sender = lastMessage.getFrom();
-    var subject = lastMessage.getSubject();
-    var body = lastMessage.getPlainBody();
-    
-    // Tulis template balasan otomatis Anda
-    var replyBody = "Halo,\\n\\n" +
-                     "Terima kasih telah menghubungi kami mengenai '" + subject + "'.\\n" +
-                     "Ini adalah balasan otomatis. Tim kami sedang meninjau pesan Anda dan akan merespons dalam waktu 1-2 hari kerja.\\n\\n" +
-                     "Salam hangat,\\n" +
-                     "Bot Otomatis Layanan Pelanggan";
-    
-    // Kirim Balasan
-    lastMessage.reply(replyBody);
-    
-    // Tandai utas sebagai telah dibaca agar tidak dibalas berulang kali
-    threads[i].markRead();
-    
-    // Beri label pada utas agar rapi
-    threads[i].addLabel(label);
-    
-    // Log hasil pencatatan ke Google Sheets jika tersedia
-    if (sheet) {
-      sheet.appendRow([new Date(), sender, "Auto-Replied Sukses", subject]);
-    }
-    
-    Logger.log("Berhasil membalas email dari: " + sender);
-  }
-}
-
-/**
- * Fungsi pembantu untuk membuat pemicu (trigger) waktu otomatis via kode
- */
-function createTimeTrigger() {
-  // Hapus pemicu lama yang ada untuk menghindari duplikasi
-  var triggers = ScriptApp.getProjectTriggers();
-  for (var i = 0; i < triggers.length; i++) {
-    if (triggers[i].getHandlerFunction() === "autoReplyInbox") {
-      ScriptApp.deleteTrigger(triggers[i]);
-    }
-  }
-  
-  // Buat pemicu baru setiap 10 menit
-  ScriptApp.newTrigger("autoReplyInbox")
-    .timeBased()
-    .everyMinutes(10)
-    .create();
-}`
-      },
-      {
-        name: 'index.html',
-        type: 'html',
-        content: `<!DOCTYPE html>
-<html>
-  <head>
-    <base target="_top">
-    <meta charset="utf-8">
-    <title>Gmail Auto-Responder Config</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-slate-50 min-h-screen p-6">
-    <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg border border-slate-200 p-8 space-y-6">
-      
-      <!-- Header -->
-      <div class="border-b border-slate-100 pb-4">
-        <h1 class="text-xl font-bold text-slate-800">Gmail Responder Bot</h1>
-        <p class="text-xs text-slate-400 mt-1">Gunakan tab pemicu Apps Script untuk menjadwalkan otomatisasi ini.</p>
-      </div>
-
-      <!-- Config Form -->
-      <div class="space-y-4">
-        <div>
-          <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Kata Kunci Filter Subjek</label>
-          <input type="text" value="TanyaApp" disabled class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-500 font-mono">
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Label Gmail Hasil Reply</label>
-          <input type="text" value="Auto-Replied" disabled class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-500 font-mono">
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Isi Template Balasan (Preview)</label>
-          <div class="bg-slate-50 p-4 border border-slate-200 rounded-lg text-xs text-slate-600 font-sans whitespace-pre-line leading-relaxed">
-            Halo,
-
-            Terima kasih telah menghubungi kami mengenai '[Subjek_Email]'.
-            Ini adalah balasan otomatis. Tim kami sedang meninjau pesan Anda dan akan merespons dalam waktu 1-2 hari kerja.
-
-            Salam hangat,
-            Bot Otomatis Layanan Pelanggan
-          </div>
-        </div>
-
-        <button onclick="simulasikanTrigger()" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg shadow-red-100 text-sm transition-all flex items-center justify-center gap-2">
-          <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
-          Uji Coba Jalankan Trigger Sekarang
-        </button>
-      </div>
-
-      <div id="log-box" class="hidden bg-slate-900 text-slate-200 p-4 rounded-lg font-mono text-xs space-y-1">
-        <p class="text-blue-400">[INFO] Memulai autoReplyInbox()...</p>
-      </div>
-
-    </div>
-
-    <script>
-      function simulasikanTrigger() {
-        var logBox = document.getElementById('log-box');
-        logBox.classList.remove('hidden');
-        logBox.innerHTML = '<p class="text-blue-400">[INFO] Memulai autoReplyInbox()...</p>';
+        // Limit to 10MB
+        if (file.size > 10 * 1024 * 1024) {
+          alert('Ukuran file terlalu besar! Maksimal ukuran file adalah 10MB.');
+          input.value = '';
+          uploadedFile = { data: null, name: '', type: '' };
+          statusEl.innerText = "Seret & lepas atau klik untuk unggah file";
+          statusEl.className = "text-[11px] text-slate-300 font-medium";
+          iconEl.className = "fa-solid fa-cloud-arrow-up text-slate-400 text-lg";
+          return;
+        }
         
-        setTimeout(function() {
-          logBox.innerHTML += '<p class="text-slate-400">[SEARCH] Mencari query: "is:unread subject:TanyaApp"...</p>';
-        }, 1000);
-
-        setTimeout(function() {
-          logBox.innerHTML += '<p class="text-emerald-400">[MATCH] Menemukan 1 email baru dari "client@example.com"!</p>';
-        }, 2000);
-
-        setTimeout(function() {
-          logBox.innerHTML += '<p class="text-slate-400">[ACTION] Mengirim balasan otomatis ke client@example.com...</p>';
-        }, 3000);
-
-        setTimeout(function() {
-          logBox.innerHTML += '<p class="text-emerald-400">[SUCCESS] Email dibalas dan diberi label "Auto-Replied"!</p>';
+        statusEl.innerText = "Membaca file: " + file.name + "...";
+        statusEl.className = "text-[11px] text-amber-400 font-mono";
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedFile.data = e.target.result; // Base64 Data URL
+          uploadedFile.name = file.name;
+          uploadedFile.type = file.type;
           
-          // Beritahu simulator utama untuk menambah baris spreadsheet demo
-          google.script.run.autoReplyInbox();
-        }, 4000);
+          statusEl.innerText = "File siap dikirim: " + file.name + " (" + (file.size / (1024 * 1024)).toFixed(2) + " MB)";
+          statusEl.className = "text-[11px] text-emerald-400 font-medium";
+          iconEl.className = "fa-solid fa-file-circle-check text-emerald-500 text-lg";
+        };
+        
+        reader.onerror = function() {
+          alert('Gagal membaca file!');
+          input.value = '';
+          uploadedFile = { data: null, name: '', type: '' };
+          statusEl.innerText = "Seret & lepas atau klik untuk unggah file";
+          statusEl.className = "text-[11px] text-slate-300 font-medium";
+          iconEl.className = "fa-solid fa-cloud-arrow-up text-slate-400 text-lg";
+        };
+        
+        reader.readAsDataURL(file);
       }
-    </script>
-  </body>
-</html>`
+
+      function openQuoteModal(prodName, category) {
+        document.getElementById('quoteProductName').innerText = prodName;
+        document.getElementById('custNotes').value = "Kami tertarik untuk memesan " + prodName + ". Silakan berikan estimasi waktu dan harga penawaran.";
+        
+        // Reset file input and state
+        const fileInput = document.getElementById('custFile');
+        if (fileInput) {
+          fileInput.value = '';
+        }
+        uploadedFile = { data: null, name: '', type: '' };
+        const statusEl = document.getElementById('fileStatus');
+        const iconEl = document.getElementById('fileIcon');
+        if (statusEl && iconEl) {
+          statusEl.innerText = "Seret & lepas atau klik untuk unggah file";
+          statusEl.className = "text-[11px] text-slate-300 font-medium";
+          iconEl.className = "fa-solid fa-cloud-arrow-up text-slate-400 text-lg";
+        }
+        
+        // Reset form states
+        document.getElementById('quoteForm').classList.remove('hidden');
+        document.getElementById('quoteSuccessPane').classList.add('hidden');
+        
+        const modal = document.getElementById('quoteModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
       }
-    ]
-  }
-];
 
-// ==========================================
-// MAIN APP COMPONENT
-// ==========================================
-export default function App() {
-  // --- Workspace File States ---
-  const [files, setFiles] = useState<GasFile[]>([]);
-  const [activeFileName, setActiveFileName] = useState<string>('code.gs');
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('form-sheets');
-  const [editorValue, setEditorValue] = useState<string>('');
-  
-  // --- Virtual Database States (Google Sheets simulation) ---
-  const [spreadsheetData, setSpreadsheetData] = useState<Array<Record<string, any>>>([]);
-  const [spreadsheetColumns, setSpreadsheetColumns] = useState<string[]>([]);
-  
-  // --- Utility States ---
-  const [saveIndicator, setSaveIndicator] = useState<'idle' | 'saving' | 'saved'>('idle');
-  const [copyIndicator, setCopyIndicator] = useState<boolean>(false);
-  const [sidebarTab, setSidebarTab] = useState<'files' | 'templates' | 'guide'>('files');
-  const [newFileName, setNewFileName] = useState<string>('');
-  const [newFileType, setNewFileType] = useState<'gs' | 'html'>('gs');
-  const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [logs, setLogs] = useState<string[]>(["[Simulator] Konsol Apps Script diinisialisasi."]);
-
-  // Iframe reference for simulator reload
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  // Initialize workspace with local storage or default template
-  useEffect(() => {
-    const savedFiles = localStorage.getItem('gas_files');
-    const savedTemplateId = localStorage.getItem('gas_template_id') || 'form-sheets';
-    const savedSheetData = localStorage.getItem('gas_sheet_data');
-
-    const activeTemplate = TEMPLATES.find(t => t.id === savedTemplateId) || TEMPLATES[0];
-
-    if (savedFiles) {
-      try {
-        const parsedFiles = JSON.parse(savedFiles);
-        setFiles(parsedFiles);
-        const codeGs = parsedFiles.find((f: GasFile) => f.name === 'code.gs');
-        if (codeGs) setEditorValue(codeGs.content);
-      } catch (e) {
-        setFiles(activeTemplate.files);
-        setEditorValue(activeTemplate.files[0].content);
+      function closeQuoteModal() {
+        const modal = document.getElementById('quoteModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
       }
-    } else {
-      setFiles(activeTemplate.files);
-      setEditorValue(activeTemplate.files[0].content);
-    }
 
-    if (savedSheetData) {
-      try {
-        setSpreadsheetData(JSON.parse(savedSheetData));
-      } catch (e) {
-        setSpreadsheetData(activeTemplate.initialSpreadsheetData || []);
+      function submitQuoteForm(e) {
+        e.preventDefault();
+        
+        const prodName = document.getElementById('quoteProductName').innerText;
+        const data = {
+          name: document.getElementById('custName').value,
+          company: document.getElementById('custCompany').value,
+          phone: document.getElementById('custPhone').value,
+          email: document.getElementById('custEmail').value,
+          quantity: document.getElementById('custQty').value,
+          notes: document.getElementById('custNotes').value + " (Produk: " + prodName + ")",
+          fileData: uploadedFile.data,
+          fileName: uploadedFile.name,
+          fileType: uploadedFile.type
+        };
+
+        // Tampilkan status sukses langsung untuk pengalaman pengguna yang instan
+        document.getElementById('quoteForm').classList.add('hidden');
+        document.getElementById('quoteSuccessPane').classList.remove('hidden');
+
+        // Construct and open mailto link for direct integration
+        const subject = encodeURIComponent("Permintaan Penawaran: " + prodName + " - " + data.company);
+        const fileInfo = uploadedFile.name ? "Nama File: " + uploadedFile.name + " (Harap lampirkan file fisik ini secara manual di email Anda)" : "Tidak ada";
+        const body = encodeURIComponent(
+          "Halo PT. Adi Logam Pratama,\n\n" +
+          "Kami tertarik untuk meminta penawaran harga untuk produk berikut:\n\n" +
+          "Nama Produk: " + prodName + "\n\n" +
+          "--- DETAIL INFORMASI KLIEN ---\n" +
+          "Nama Lengkap: " + data.name + "\n" +
+          "Perusahaan / CV: " + data.company + "\n" +
+          "No. WhatsApp: " + data.phone + "\n" +
+          "Email: " + data.email + "\n" +
+          "Estimasi Jumlah Kebutuhan: " + data.quantity + " Pcs\n" +
+          "Lampiran File: " + fileInfo + "\n\n" +
+          "--- SPESIFIKASI TAMBAHAN / CATATAN ---\n" +
+          data.notes + "\n\n" +
+          "Mohon segera berikan penawaran harga terbaik dan estimasi waktu pengerjaan.\n\n" +
+          "Terima kasih."
+        );
+
+        const mailtoUrl = "mailto:adilogampratama@yahoo.com?subject=" + subject + "&body=" + body;
+        window.location.href = mailtoUrl;
+
+        // Panggilan backend aman ke Google Apps Script (Hanya berjalan jika dideploy sebagai Web App di GAS)
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(response) {
+              console.log("Respon server Google Apps Script:", response);
+            })
+            .withFailureHandler(function(err) {
+              console.error("Gagal mengirim ke GAS:", err);
+            })
+            .submitQuotation(data);
+        }
       }
-    } else {
-      setSpreadsheetData(activeTemplate.initialSpreadsheetData || []);
-    }
 
-    setSpreadsheetColumns(activeTemplate.spreadsheetColumns || []);
-    setSelectedTemplateId(activeTemplate.id);
-  }, []);
-
-  // Sync editorValue when active file changes
-  useEffect(() => {
-    const currentFile = files.find(f => f.name === activeFileName);
-    if (currentFile) {
-      setEditorValue(currentFile.content);
-    }
-  }, [activeFileName, files]);
-
-  // Save current files state to local storage
-  const saveFilesToLocalStorage = (currentFiles: GasFile[]) => {
-    localStorage.setItem('gas_files', JSON.stringify(currentFiles));
-  };
-
-  // Update active file content
-  const handleEditorChange = (val: string) => {
-    setEditorValue(val);
-    const updated = files.map(f => {
-      if (f.name === activeFileName) {
-        return { ...f, content: val };
+      // ----------------------------------------
+      // LEGALITY DOC VIEWER CONTROLLER
+      // ----------------------------------------
+      function openLegalityViewer(title, number, issuer, year) {
+        document.getElementById('legalTitle').innerText = title;
+        document.getElementById('legalNumber').innerText = number;
+        document.getElementById('legalIssuer').innerText = issuer;
+        
+        let city = "Klaten";
+        if (title.includes("NIB") || title.includes("Nomor Induk Berusaha") || title.includes("Akta Pendirian")) {
+          city = "Jakarta";
+        }
+        document.getElementById('legalYear').innerText = city + ", " + year;
+        
+        const modal = document.getElementById('legalityModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
       }
-      return f;
-    });
-    setFiles(updated);
-    saveFilesToLocalStorage(updated);
-  };
 
-  // Apply template
-  const applyTemplate = (template: Template) => {
-    setSelectedTemplateId(template.id);
-    setFiles(template.files);
-    setSpreadsheetColumns(template.spreadsheetColumns || []);
-    setSpreadsheetData(template.initialSpreadsheetData || []);
-    setActiveFileName('code.gs');
-    setEditorValue(template.files[0].content);
-    localStorage.setItem('gas_template_id', template.id);
-    localStorage.setItem('gas_files', JSON.stringify(template.files));
-    localStorage.setItem('gas_sheet_data', JSON.stringify(template.initialSpreadsheetData || []));
-    
-    // Reset logs
-    setLogs([`[Simulator] Template "${template.title}" dimuat.`, "[Simulator] Google Sheets virtual diatur ulang."]);
-    
-    // Reset simulator iframe if it exists
-    if (iframeRef.current) {
-      iframeRef.current.srcdoc = iframeRef.current.srcdoc;
-    }
-  };
-
-  // Save changes button action
-  const handleSaveBtn = () => {
-    setSaveIndicator('saving');
-    setTimeout(() => {
-      setSaveIndicator('saved');
-      setLogs(prev => [...prev, `[Sistem] File "${activeFileName}" berhasil disimpan.`]);
-      setTimeout(() => setSaveIndicator('idle'), 2000);
-    }, 800);
-  };
-
-  // Copy to clipboard action
-  const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(editorValue);
-    setCopyIndicator(true);
-    setLogs(prev => [...prev, `[Salin] Kode dari "${activeFileName}" disalin ke clipboard.`]);
-    setTimeout(() => setCopyIndicator(false), 2000);
-  };
-
-  // Download individual file
-  const handleDownloadSingle = () => {
-    const element = document.createElement("a");
-    const fileBlob = new Blob([editorValue], {type: 'text/plain'});
-    element.href = URL.createObjectURL(fileBlob);
-    element.download = activeFileName;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    setLogs(prev => [...prev, `[Unduh] File "${activeFileName}" berhasil diunduh.`]);
-  };
-
-  // Download all files as a list of text guides
-  const handleDownloadAll = () => {
-    files.forEach(f => {
-      const element = document.createElement("a");
-      const fileBlob = new Blob([f.content], {type: 'text/plain'});
-      element.href = URL.createObjectURL(fileBlob);
-      element.download = f.name;
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-    });
-    setLogs(prev => [...prev, `[Unduh] Berhasil mengunduh semua file (${files.length} file).`]);
-  };
-
-  // Add new file inside virtual workspace
-  const handleAddNewFile = () => {
-    if (!newFileName.trim()) return;
-    
-    // Ensure clean extension
-    let cleanName = newFileName.trim().replace(/\s+/g, '_');
-    if (!cleanName.endsWith(`.${newFileType}`)) {
-      cleanName = `${cleanName}.${newFileType}`;
-    }
-
-    if (files.some(f => f.name.toLowerCase() === cleanName.toLowerCase())) {
-      alert("File dengan nama tersebut sudah ada!");
-      return;
-    }
-
-    const newFileObj: GasFile = {
-      name: cleanName,
-      type: newFileType,
-      content: newFileType === 'gs' 
-        ? `function ${cleanName.replace('.gs', '')}() {\n  // Tulis fungsi Apps Script baru Anda di sini\n}` 
-        : `<!DOCTYPE html>\n<html>\n  <head>\n    <base target="_top">\n  </head>\n  <body>\n    <h1>Halaman ${cleanName.replace('.html', '')}</h1>\n  </body>\n</html>`
-    };
-
-    const updated = [...files, newFileObj];
-    setFiles(updated);
-    setActiveFileName(cleanName);
-    saveFilesToLocalStorage(updated);
-    
-    setNewFileName('');
-    setShowAddModal(false);
-    setLogs(prev => [...prev, `[Sistem] File baru "${cleanName}" ditambahkan.`]);
-  };
-
-  // Delete file inside virtual workspace
-  const handleDeleteFile = (name: string) => {
-    if (name === 'code.gs' || name === 'index.html') {
-      alert("File inti 'code.gs' dan 'index.html' tidak boleh dihapus.");
-      return;
-    }
-    if (confirm(`Apakah Anda yakin ingin menghapus file "${name}"?`)) {
-      const updated = files.filter(f => f.name !== name);
-      setFiles(updated);
-      saveFilesToLocalStorage(updated);
-      if (activeFileName === name) {
-        setActiveFileName('code.gs');
+      function closeLegalityViewer() {
+        const modal = document.getElementById('legalityModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
       }
-      setLogs(prev => [...prev, `[Sistem] File "${name}" telah dihapus.`]);
-    }
-  };
 
-  // --- INTERACTIVE SIMULATOR COMMUNICATION ---
-  // Listen to postMessage from the iframe simulator
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const data = event.data;
-      if (!data || typeof data !== 'object') return;
+      function closeLegalityViewerOnBg(e) {
+        if (e.target.id === 'legalityModal') {
+          closeLegalityViewer();
+        }
+      }
 
-      if (data.type === 'GAS_RUN_REQ') {
-        const { requestId, functionName, args } = data;
-        setLogs(prev => [...prev, `[GAS Run] Memanggil fungsi: ${functionName}()`]);
+      // ----------------------------------------
+      // FAQ INTERACTIVE ACCORDION
+      // ----------------------------------------
+      function toggleFaq(faqId) {
+        const ans = document.getElementById('faq-ans-' + faqId);
+        const icon = document.getElementById('faq-icon-' + faqId);
+        
+        if (ans.classList.contains('hidden')) {
+          ans.classList.remove('hidden');
+          icon.className = 'fa-solid fa-chevron-up text-amber-500 transition-transform';
+        } else {
+          ans.classList.add('hidden');
+          icon.className = 'fa-solid fa-chevron-down text-slate-400 transition-transform';
+        }
+      }
 
-        // Simulasikan logic Apps Script berdasarkan fungsi yang dipanggil
-        setTimeout(() => {
-          let result: any = null;
-          let error: string | null = null;
+      // ----------------------------------------
+      // BACK TO TOP BUTTON LOGIC
+      // ----------------------------------------
+      window.addEventListener('scroll', function() {
+        const btn = document.getElementById('btn-back-to-top');
+        if (window.scrollY > 300) {
+          btn.classList.remove('opacity-0', 'translate-y-4', 'invisible', 'pointer-events-none');
+          btn.classList.add('opacity-100', 'translate-y-0', 'visible');
+        } else {
+          btn.classList.remove('opacity-100', 'translate-y-0', 'visible');
+          btn.classList.add('opacity-0', 'translate-y-4', 'invisible', 'pointer-events-none');
+        }
+      });
 
-          if (functionName === 'getActiveUserEmail') {
-            result = "aminghermanto3@gmail.com";
-          } else if (functionName === 'appendToSheet') {
-            const formData = args[0] || {};
-            const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-            
-            const newRow: Record<string, any> = {};
-            if (selectedTemplateId === 'form-sheets') {
-              newRow['Waktu (Timestamp)'] = timestamp;
-              newRow['Nama Lengkap'] = formData.nama || 'Anonim';
-              newRow['Instansi'] = formData.instansi || '-';
-              newRow['Tujuan Kunjungan'] = formData.tujuan || 'Konsultasi Teknis';
-              newRow['Email Pengguna'] = 'aminghermanto3@gmail.com';
-            } else if (selectedTemplateId === 'attendance-dashboard') {
-              newRow['Waktu Absen'] = timestamp;
-              newRow['Nama'] = formData.nama || 'Pegawai';
-              newRow['Status Kehadiran'] = formData.status || 'Hadir';
-            } else {
-              newRow['Waktu'] = timestamp;
-              newRow['Data'] = JSON.stringify(formData);
-            }
+      function scrollToTop() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
 
-            // Append row to virtual Spreadsheet
-            const newSheetData = [newRow, ...spreadsheetData];
-            setSpreadsheetData(newSheetData);
-            localStorage.setItem('gas_sheet_data', JSON.stringify(newSheetData));
+      // ----------------------------------------
+      // VIDEO PLAYBACK & STANDBY IMAGE LOGIC
+      // ----------------------------------------
+      const profileVideo = document.getElementById('profileVideo');
+      const videoEndedOverlay = document.getElementById('videoEndedOverlay');
+      const videoInfoOverlay = document.getElementById('videoInfoOverlay');
+      const replayButton = document.getElementById('replayButton');
 
-            result = `Pendaftaran Sukses! Data Anda berhasil dicatat di baris ke-${newSheetData.length + 1}`;
-            setLogs(prev => [...prev, `[Spreadsheet] Baris baru ditambahkan oleh ${formData.nama || 'Pengguna'}.`]);
-          } else if (functionName === 'getAttendanceData') {
-            // Map our virtual spreadsheetData state to output format
-            result = spreadsheetData.map(row => ({
-              timestamp: row['Waktu Absen'] || row['Waktu (Timestamp)'] || '08:00',
-              nama: row['Nama'] || row['Nama Lengkap'] || 'Tanpa Nama',
-              status: row['Status Kehadiran'] || 'Hadir'
-            }));
-          } else if (functionName === 'submitPresence') {
-            const nama = args[0];
-            const status = args[1];
-            const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-
-            const newRow = {
-              'Waktu Absen': timestamp,
-              'Nama': nama,
-              'Status Kehadiran': status
-            };
-
-            const newSheetData = [newRow, ...spreadsheetData];
-            setSpreadsheetData(newSheetData);
-            localStorage.setItem('gas_sheet_data', JSON.stringify(newSheetData));
-
-            result = { success: true, message: "Absen berhasil dicatat!" };
-            setLogs(prev => [...prev, `[Spreadsheet] Absensi dicatat: ${nama} (${status})`]);
-          } else if (functionName === 'autoReplyInbox') {
-            // Simulated Gmail Auto-Responder logs row to spreadsheet
-            const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-            const newRow = {
-              'Waktu Pemicu': timestamp,
-              'Email Pengirim': 'client@example.com',
-              'Status Respons': 'Terkirim',
-              'Pesan Pengirim': 'TanyaApp: Tanya cara pendaftaran'
-            };
-            const newSheetData = [newRow, ...spreadsheetData];
-            setSpreadsheetData(newSheetData);
-            localStorage.setItem('gas_sheet_data', JSON.stringify(newSheetData));
-            result = true;
-          } else {
-            // Fallback default function simulation
-            result = "Fungsi berhasil dieksekusi di Server Google (Simulasi)";
+      if (profileVideo) {
+        profileVideo.addEventListener('ended', function() {
+          if (videoEndedOverlay) {
+            videoEndedOverlay.classList.remove('hidden');
+            setTimeout(() => {
+              videoEndedOverlay.classList.remove('opacity-0');
+              videoEndedOverlay.classList.add('opacity-100');
+            }, 10);
           }
-
-          // Kirim respons balik ke iframe
-          if (iframeRef.current && iframeRef.current.contentWindow) {
-            iframeRef.current.contentWindow.postMessage({
-              type: 'GAS_RUN_RES',
-              requestId: requestId,
-              result: result,
-              error: error
-            }, '*');
+          if (videoInfoOverlay) {
+            videoInfoOverlay.classList.add('hidden');
           }
-        }, 500); // delay 500ms to simulate network latency beautifully!
+        });
       }
-    };
 
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [spreadsheetData, selectedTemplateId]);
-
-  // Inject proxy and active index.html into srcDoc
-  const getIframeSrcDoc = () => {
-    const indexHtmlFile = files.find(f => f.name === 'index.html');
-    if (!indexHtmlFile) return '';
-
-    // Standard script injector that creates google.script.run Proxy
-    const proxyScript = `
-      <script>
-        (function() {
-          let successCallback = null;
-          let failureCallback = null;
-          
-          const functionRunner = new Proxy({}, {
-            get(target, prop) {
-              return function(...args) {
-                const requestId = Math.random().toString(36).substring(2);
-                window.parent.postMessage({
-                  type: 'GAS_RUN_REQ',
-                  requestId: requestId,
-                  functionName: prop,
-                  args: args
-                }, '*');
-                
-                const currentSuccess = successCallback;
-                const currentFailure = failureCallback;
-                
-                successCallback = null;
-                failureCallback = null;
-                
-                const handler = function(event) {
-                  if (event.data && event.data.type === 'GAS_RUN_RES' && event.data.requestId === requestId) {
-                    window.removeEventListener('message', handler);
-                    if (event.data.error) {
-                      if (currentFailure) currentFailure(new Error(event.data.error));
-                    } else {
-                      if (currentSuccess) currentSuccess(event.data.result);
-                    }
-                  }
-                };
-                window.addEventListener('message', handler);
-              };
+      if (replayButton && profileVideo) {
+        replayButton.addEventListener('click', function() {
+          profileVideo.currentTime = 0;
+          profileVideo.play().then(() => {
+            if (videoEndedOverlay) {
+              videoEndedOverlay.classList.add('opacity-0');
+              videoEndedOverlay.classList.remove('opacity-100');
+              setTimeout(() => {
+                videoEndedOverlay.classList.add('hidden');
+              }, 500);
             }
+            if (videoInfoOverlay) {
+              videoInfoOverlay.classList.remove('hidden');
+            }
+          }).catch(err => {
+            console.log("Video replay error:", err);
           });
+        });
+      }
 
-          window.google = {
-            script: {
-              run: new Proxy({}, {
-                get(target, prop) {
-                  if (prop === 'withSuccessHandler') {
-                    return function(callback) {
-                      successCallback = callback;
-                      return window.google.script.run;
-                    };
-                  }
-                  if (prop === 'withFailureHandler') {
-                    return function(callback) {
-                      failureCallback = callback;
-                      return window.google.script.run;
-                    };
-                  }
-                  return functionRunner[prop];
-                }
-              })
-            }
-          };
-        })();
-      </script>
-    `;
+    </script>
 
-    // Inject our custom script tag right after <head> or at the top of <html>
-    const originalHtml = indexHtmlFile.content;
-    let injectedHtml = originalHtml;
-    
-    if (originalHtml.includes('<head>')) {
-      injectedHtml = originalHtml.replace('<head>', `<head>${proxyScript}`);
-    } else {
-      injectedHtml = proxyScript + originalHtml;
-    }
+    <!-- Floating Back to Top Button -->
+    <button
+      id="btn-back-to-top"
+      onclick="scrollToTop()"
+      class="fixed bottom-[72px] right-6 z-40 p-2.5 bg-slate-900/90 hover:bg-slate-800 text-amber-500 hover:text-amber-400 border border-slate-850 hover:border-amber-500/30 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center opacity-0 translate-y-4 invisible pointer-events-none"
+      title="Kembali ke Atas"
+    >
+      <i class="fa-solid fa-arrow-up text-base"></i>
+    </button>
 
-    return injectedHtml;
-  };
-
-  // Deployment Steps list
-  const deploySteps = [
-    {
-      title: "Buka Google Apps Script Console",
-      desc: "Kunjungi script.google.com dengan Akun Google Anda dan buat Project Baru.",
-      action: "https://script.google.com"
-    },
-    {
-      title: "Salin Kode Utama (code.gs)",
-      desc: "Hapus seluruh kode bawaan di file 'Kode.gs' Apps Script, lalu salin seluruh isi file 'code.gs' dari tab editor sebelah kiri.",
-    },
-    {
-      title: "Buat File HTML 'index'",
-      desc: "Klik tanda tambah (+) di panel kiri Apps Script, pilih 'HTML', beri nama file tersebut 'index' (case-sensitive, tanpa menulis ekstensi .html).",
-    },
-    {
-      title: "Salin Tampilan (index.html)",
-      desc: "Hapus seluruh kode default di file 'index.html' Apps Script baru tersebut, lalu salin dan tempel seluruh isi file 'index.html' dari editor ini.",
-    },
-    {
-      title: "Simpan & Terapkan Deployment Baru",
-      desc: "Klik ikon Simpan (disket) di atas. Klik 'Terapkan' (Deploy) -> 'Deployment baru'. Pilih jenis gerigi konfigurasi 'Aplikasi Web' (Web App).",
-    },
-    {
-      title: "Atur Hak Akses Publik",
-      desc: "Setel konfigurasi: Jalankan sebagai 'Saya' (Me), dan Siapa yang memiliki akses ke: 'Siapa saja' (Anyone). Klik tombol Terapkan.",
-    },
-    {
-      title: "Beri Izin Akses Akun",
-      desc: "Klik 'Izinkan Akses' (Authorize Access), pilih akun Google Anda, klik 'Advanced' -> 'Go to Untitled Project (unsafe)', lalu klik 'Allow'. Salin URL Aplikasi Web Anda!",
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-[#0d0e12] text-slate-100 font-sans flex flex-col selection:bg-blue-600 selection:text-white" id="main_app_layout">
-      
-      {/* ==========================================
-          HEADER UTAMA
-          ========================================== */}
-      <header className="border-b border-slate-800 bg-[#12131a] px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm z-10" id="header_section">
-        <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-tr from-blue-600 to-indigo-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/30">
-            <Code className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-bold text-lg tracking-tight text-white">Google Apps Script</h1>
-              <span className="bg-blue-500/10 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-500/20">
-                Workspace Organizer
-              </span>
-            </div>
-            <p className="text-xs text-slate-400">Kelola, Edit & Simulasikan File template code.gs & index.html</p>
-          </div>
-        </div>
-
-        {/* Action button bar */}
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-          <button 
-            onClick={handleDownloadAll}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 text-sm font-semibold rounded-xl transition-all border border-slate-700/60"
-            title="Unduh Semua file"
-            id="btn_download_all"
-          >
-            <Download className="w-4 h-4" />
-            <span>Unduh Semua</span>
-          </button>
-          
-          <a 
-            href="https://script.google.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-95 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-blue-950/40"
-            id="btn_open_gas"
-          >
-            <span>Buka Google Script</span>
-            <ExternalLink className="w-4 h-4" />
-          </a>
-        </div>
-      </header>
-
-      {/* ==========================================
-          WORKSPACE LAYOUT
-          ========================================== */}
-      <main className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-5 p-5 bg-[#090a0f] overflow-x-hidden" id="workspace_main">
-        
-        {/* PANEL KIRI (Files, Templates, Guide) - xl:col-span-3 */}
-        <section className="xl:col-span-3 flex flex-col bg-[#12131a] rounded-2xl border border-slate-800/80 shadow-md overflow-hidden h-[calc(100vh-140px)] min-h-[500px]" id="left_panel">
-          {/* Navigation Tab */}
-          <div className="flex border-b border-slate-800 bg-[#15161f] p-1 gap-1">
-            <button
-              onClick={() => setSidebarTab('files')}
-              className={`flex-1 py-2 text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-all ${
-                sidebarTab === 'files' 
-                  ? 'bg-slate-800 text-white shadow-sm' 
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-              }`}
-              id="tab_sidebar_files"
-            >
-              <Folder className="w-3.5 h-3.5" />
-              <span>File Saya</span>
-            </button>
-            <button
-              onClick={() => setSidebarTab('templates')}
-              className={`flex-1 py-2 text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-all ${
-                sidebarTab === 'templates' 
-                  ? 'bg-slate-800 text-white shadow-sm' 
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-              }`}
-              id="tab_sidebar_templates"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-              <span>Template</span>
-            </button>
-            <button
-              onClick={() => setSidebarTab('guide')}
-              className={`flex-1 py-2 text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-all ${
-                sidebarTab === 'guide' 
-                  ? 'bg-slate-800 text-white shadow-sm' 
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-              }`}
-              id="tab_sidebar_guide"
-            >
-              <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-              <span>Panduan</span>
-            </button>
-          </div>
-
-          <div className="flex-1 p-4 overflow-y-auto space-y-4" id="left_panel_content">
-            <AnimatePresence mode="wait">
-              {/* TAB 1: FILE SAYA */}
-              {sidebarTab === 'files' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.15 }}
-                  className="space-y-4 h-full flex flex-col"
-                  key="files-tab"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Folder: google.apps.script
-                    </span>
-                    <button 
-                      onClick={() => setShowAddModal(true)}
-                      className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-blue-400 transition-colors"
-                      title="Tambah File Baru"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  {/* Files List */}
-                  <div className="space-y-1 flex-1 overflow-y-auto">
-                    {files.map((file) => {
-                      const isSelected = activeFileName === file.name;
-                      return (
-                        <div
-                          key={file.name}
-                          onClick={() => setActiveFileName(file.name)}
-                          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer group transition-all duration-150 ${
-                            isSelected 
-                              ? 'bg-blue-600/15 border border-blue-500/30 text-blue-300' 
-                              : 'hover:bg-slate-800/40 border border-transparent text-slate-300'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3 truncate">
-                            {file.type === 'gs' ? (
-                              <FileCode className={`w-4 h-4 ${isSelected ? 'text-blue-400' : 'text-amber-500'}`} />
-                            ) : (
-                              <Globe className={`w-4 h-4 ${isSelected ? 'text-blue-400' : 'text-blue-500'}`} />
-                            )}
-                            <span className="text-sm font-medium truncate">{file.name}</span>
-                          </div>
-
-                          {/* Delete button (only show on custom files) */}
-                          {file.name !== 'code.gs' && file.name !== 'index.html' && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteFile(file.name);
-                              }}
-                              className="opacity-0 group-hover:opacity-100 p-1 hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 rounded-md transition-all"
-                              title="Hapus file"
-                            >
-                              <Trash className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Local Storage Indicator Banner */}
-                  <div className="bg-slate-900/50 p-3 rounded-xl border border-slate-800 flex items-start gap-2.5">
-                    <Info className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
-                    <p className="text-[11px] text-slate-400 leading-relaxed">
-                      Perubahan yang Anda ketik disimpan secara otomatis di memori lokal peramban.
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* TAB 2: TEMPLATE LIBRARY */}
-              {sidebarTab === 'templates' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.15 }}
-                  className="space-y-4"
-                  key="templates-tab"
-                >
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                    Template Berfungsi Penuh
-                  </p>
-
-                  <div className="space-y-3">
-                    {TEMPLATES.map((tmpl) => {
-                      const isActive = selectedTemplateId === tmpl.id;
-                      return (
-                        <div
-                          key={tmpl.id}
-                          onClick={() => applyTemplate(tmpl)}
-                          className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                            isActive 
-                              ? 'bg-blue-600/10 border-blue-500/50 hover:border-blue-500' 
-                              : 'bg-slate-900/40 border-slate-800 hover:bg-slate-800/40 hover:border-slate-700'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-1.5">
-                            <div className="flex items-center gap-2">
-                              {tmpl.icon}
-                              <h4 className="text-sm font-semibold text-slate-200">{tmpl.title}</h4>
-                            </div>
-                            <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">
-                              {tmpl.category}
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-400 leading-relaxed">
-                            {tmpl.description}
-                          </p>
-                          {isActive && (
-                            <div className="mt-3 flex items-center justify-end text-[11px] text-blue-400 font-medium">
-                              <span className="bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">Sedang Aktif</span>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              )}
-
-              {/* TAB 3: PANDUAN DEPLOY */}
-              {sidebarTab === 'guide' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.15 }}
-                  className="space-y-3"
-                  key="guide-tab"
-                >
-                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-800">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Langkah Deployment Web App
-                    </span>
-                    <span className="text-xs font-bold text-amber-400">
-                      Step {activeStep + 1}/7
-                    </span>
-                  </div>
-
-                  {/* Interactive Steps Accordion */}
-                  <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
-                    {deploySteps.map((step, idx) => (
-                      <div 
-                        key={idx}
-                        onClick={() => setActiveStep(idx)}
-                        className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
-                          activeStep === idx 
-                            ? 'bg-amber-500/10 border-amber-500/40' 
-                            : 'bg-slate-900/20 border-slate-800/80 hover:bg-slate-800/20'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5 mb-1">
-                          <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                            activeStep === idx ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'
-                          }`}>
-                            {idx + 1}
-                          </div>
-                          <h4 className="text-xs font-bold text-slate-200">{step.title}</h4>
-                        </div>
-                        {activeStep === idx && (
-                          <motion.p 
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            className="text-[11px] text-slate-400 leading-relaxed pl-7 mt-1.5"
-                          >
-                            {step.desc}
-                            {step.action && (
-                              <a 
-                                href={step.action} 
-                                target="_blank" 
-                                rel="noreferrer" 
-                                className="inline-flex items-center gap-1 text-blue-400 hover:underline mt-2 font-semibold block"
-                              >
-                                Buka Link Resmi <ExternalLink className="w-2.5 h-2.5" />
-                              </a>
-                            )}
-                          </motion.p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex justify-between items-center pt-2 gap-2">
-                    <button
-                      disabled={activeStep === 0}
-                      onClick={() => setActiveStep(prev => prev - 1)}
-                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-xs font-semibold rounded-lg text-slate-300 transition-all"
-                    >
-                      Sebelumnya
-                    </button>
-                    <button
-                      disabled={activeStep === deploySteps.length - 1}
-                      onClick={() => setActiveStep(prev => prev + 1)}
-                      className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 text-xs font-bold rounded-lg transition-all"
-                    >
-                      Lanjut
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </section>
-
-        {/* PANEL TENGAH (Interactive Code Editor) - xl:col-span-5 */}
-        <section className="xl:col-span-5 flex flex-col bg-[#12131a] rounded-2xl border border-slate-800/80 shadow-md overflow-hidden h-[calc(100vh-140px)] min-h-[500px]" id="editor_panel">
-          {/* Editor Header Bar */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-[#15161f]" id="editor_header">
-            <div className="flex items-center gap-2">
-              <Code className="w-4 h-4 text-slate-400" />
-              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">
-                {activeFileName}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={handleSaveBtn}
-                disabled={saveIndicator === 'saving'}
-                className="p-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-semibold rounded-lg text-slate-200 transition-all border border-slate-700 flex items-center gap-1"
-                title="Simpan file"
-                id="btn_save_file"
-              >
-                {saveIndicator === 'saving' ? (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-400" />
-                    <span className="text-[10px]">Menyimpan...</span>
-                  </>
-                ) : saveIndicator === 'saved' ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="text-[10px] text-emerald-400">Tersimpan</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-[10px]">Simpan File</span>
-                  </>
-                )}
-              </button>
-
-              <button
-                onClick={handleCopyToClipboard}
-                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700"
-                title="Salin Kode"
-                id="btn_copy_code"
-              >
-                {copyIndicator ? (
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                ) : (
-                  <Copy className="w-3.5 h-3.5" />
-                )}
-              </button>
-
-              <button
-                onClick={handleDownloadSingle}
-                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700"
-                title="Unduh File Ini"
-                id="btn_download_file"
-              >
-                <Download className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Code Textarea with line numbers */}
-          <div className="flex-1 flex overflow-hidden bg-[#181923] relative font-mono text-sm" id="editor_body">
-            
-            {/* Custom Line Numbers Column */}
-            <div className="bg-[#14151e] text-slate-600 px-3.5 py-4 text-right select-none border-r border-slate-800 flex flex-col items-end min-w-[42px] font-mono leading-6">
-              {editorValue.split('\n').map((_, i) => (
-                <div key={i}>{i + 1}</div>
-              ))}
-            </div>
-
-            {/* Main Interactive TextArea */}
-            <textarea
-              value={editorValue}
-              onChange={(e) => handleEditorChange(e.target.value)}
-              spellCheck={false}
-              className="flex-1 bg-transparent text-slate-200 p-4 font-mono text-xs leading-6 resize-none focus:outline-none overflow-y-auto whitespace-pre code-editor"
-              id="code_textarea_editor"
-              placeholder="// Tulis kode Apps Script di sini"
-            />
-          </div>
-
-          {/* Quick instructions indicator */}
-          <div className="px-4 py-2 bg-[#12131a] border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>Baris: {editorValue.split('\n').length} | Karakter: {editorValue.length}</span>
-            <span className="text-blue-400/70">Mendukung JavaScript & HTML</span>
-          </div>
-        </section>
-
-        {/* PANEL KANAN (Spreadsheet + Web App Simulator) - xl:col-span-4 */}
-        <section className="xl:col-span-4 flex flex-col gap-5 h-[calc(100vh-140px)] min-h-[500px]" id="right_panel_section">
-          
-          {/* PANEL KANAN ATAS: LIVE WEB APP SIMULATOR */}
-          <div className="flex-1 flex flex-col bg-[#12131a] rounded-2xl border border-slate-800/80 shadow-md overflow-hidden" id="simulator_container">
-            {/* Simulator Title bar */}
-            <div className="px-4 py-2.5 border-b border-slate-800 bg-[#15161f] flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Simulasi Live Web App</span>
-              </div>
-              <button 
-                onClick={() => {
-                  if (iframeRef.current) {
-                    // Quick iframe reload
-                    iframeRef.current.srcdoc = getIframeSrcDoc();
-                    setLogs(prev => [...prev, "[Simulator] Memuat ulang tampilan Web App."]);
-                  }
-                }}
-                className="p-1 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-200 transition-colors"
-                title="Segarkan Simulator"
-                id="btn_refresh_simulator"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Interactive Sandbox Simulator Frame */}
-            <div className="flex-1 bg-[#f8f9fa] border-b border-slate-800 relative flex items-center justify-center p-0" id="iframe_wrapper">
-              <iframe
-                ref={iframeRef}
-                title="GAS Web App Preview"
-                srcDoc={getIframeSrcDoc()}
-                className="w-full h-full bg-transparent border-none"
-                sandbox="allow-scripts allow-modals allow-same-origin allow-forms"
-              />
-            </div>
-            
-            {/* Live simulator logger status line */}
-            <div className="bg-[#111218] p-3 text-xs font-mono border-t border-slate-800/80 h-28 overflow-y-auto space-y-1">
-              <div className="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-1">Konsol Logger Real-Time:</div>
-              {logs.slice(-5).map((log, index) => (
-                <div key={index} className="text-slate-400 flex items-start gap-1">
-                  <span className="text-slate-600 font-bold shrink-0">&gt;</span>
-                  <span className="leading-normal">{log}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* PANEL KANAN BAWAH: VIRTUAL GOOGLE SHEETS */}
-          <div className="h-[220px] bg-[#12131a] rounded-2xl border border-slate-800/80 shadow-md overflow-hidden flex flex-col" id="spreadsheet_container">
-            <div className="px-4 py-2.5 border-b border-slate-800 bg-[#15161f] flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Database className="w-4 h-4 text-emerald-500" />
-                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Simulasi Google Sheet</span>
-              </div>
-              <button 
-                onClick={() => {
-                  const tmpl = TEMPLATES.find(t => t.id === selectedTemplateId);
-                  if (tmpl) {
-                    setSpreadsheetData(tmpl.initialSpreadsheetData || []);
-                    localStorage.setItem('gas_sheet_data', JSON.stringify(tmpl.initialSpreadsheetData || []));
-                    setLogs(prev => [...prev, "[Spreadsheet] Simulasi Sheet diatur ulang ke bawaan."]);
-                  }
-                }}
-                className="text-[10px] font-semibold text-rose-400 hover:text-rose-300 transition-colors"
-                title="Reset Database"
-              >
-                Reset Sheet
-              </button>
-            </div>
-
-            {/* Virtual Spreadsheet Table */}
-            <div className="flex-1 overflow-auto bg-[#161722]" id="spreadsheet_table_wrapper">
-              {spreadsheetData.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center p-4 text-center">
-                  <Database className="w-8 h-8 text-slate-700 mb-2" />
-                  <p className="text-xs text-slate-500 font-medium">Belum ada baris data.</p>
-                  <p className="text-[10px] text-slate-600 mt-0.5">Kirim data dari formulir di atas untuk mengisi baris spreadsheet ini.</p>
-                </div>
-              ) : (
-                <table className="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr className="bg-[#13141d] border-b border-slate-800 sticky top-0">
-                      {spreadsheetColumns.map((col) => (
-                        <th key={col} className="py-2.5 px-3 font-semibold text-slate-400 border-r border-slate-800 uppercase tracking-wider text-[10px]">
-                          {col}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-800/40">
-                    {spreadsheetData.map((row, idx) => (
-                      <tr key={idx} className="hover:bg-slate-800/20 transition-colors">
-                        {spreadsheetColumns.map((col) => (
-                          <td key={col} className="py-2 px-3 text-slate-300 truncate max-w-[150px] font-mono text-[11px] border-r border-slate-800/40">
-                            {row[col] !== undefined ? String(row[col]) : '-'}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-            
-            {/* Spreadsheet footer */}
-            <div className="bg-[#13141f] border-t border-slate-800 p-2 text-center text-[10px] text-slate-500 font-mono">
-              Total Baris: {spreadsheetData.length} | Terikat ke Project Script Aktif
-            </div>
-          </div>
-
-        </section>
-
-      </main>
-
-      {/* ==========================================
-          MODAL: ADD NEW FILE
-          ========================================== */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" id="modal_add_file_overlay">
-          <motion.div 
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-[#12131a] rounded-2xl border border-slate-800 p-6 w-full max-w-sm shadow-2xl"
-          >
-            <h3 className="text-md font-bold text-white mb-4">Buat File Baru</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1.5">Nama File</label>
-                <input
-                  type="text"
-                  value={newFileName}
-                  onChange={(e) => setNewFileName(e.target.value)}
-                  placeholder="Misal: utils, style, service"
-                  className="w-full bg-[#181923] border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1.5">Jenis File</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setNewFileType('gs')}
-                    className={`py-2 px-3 text-xs font-semibold rounded-xl border transition-all ${
-                      newFileType === 'gs'
-                        ? 'bg-amber-500/10 border-amber-500/50 text-amber-400'
-                        : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    Google Script (.gs)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewFileType('html')}
-                    className={`py-2 px-3 text-xs font-semibold rounded-xl border transition-all ${
-                      newFileType === 'html'
-                        ? 'bg-blue-500/10 border-blue-500/50 text-blue-400'
-                        : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    HTML (.html)
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex gap-2 pt-2 justify-end">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 hover:bg-slate-800 rounded-xl text-xs font-semibold text-slate-400 transition-all"
-                >
-                  Batal
-                </button>
-                <button
-                  type="button"
-                  onClick={handleAddNewFile}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition-all shadow-md shadow-blue-950/40"
-                >
-                  Tambah File
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
-
-    </div>
-  );
-}
+    <!-- Floating WhatsApp Service Button -->
+    <a
+      id="btn-whatsapp-floating"
+      href="https://wa.me/6282162294814?text=Halo%20PT.%20Adi%20Logam%20Pratama,%20saya%20tertarik%20dengan%20produk%20dan%20layanan%20Anda."
+      target="_blank"
+      rel="noopener noreferrer"
+      class="fixed bottom-6 right-6 z-40 flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-full shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group animate-fade-in"
+    >
+      <i class="fa-brands fa-whatsapp text-sm shrink-0"></i>
+      <span>Hubungi Kami</span>
+    </a>
+  </body>
+  </html>

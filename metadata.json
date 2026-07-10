@@ -1,6 +1,6 @@
 {
-  "name": "Google Apps Script Organizer",
-  "description": "A elegant and clean workspace for organizing, editing, and exporting Google Apps Script code (code.gs) and web views (index.html).",
+  "name": "PT. ADI LOGAM PRATAMA",
+  "description": "Company Profile PT. Adi Logam Pratama - Spesialis Machining, Fabrikasi Konstruksi Baja & Perpipaan Industri presisi tinggi.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
