@@ -1,0 +1,6 @@
+{
+  "name": "Google Apps Script Organizer",
+  "description": "A elegant and clean workspace for organizing, editing, and exporting Google Apps Script code (code.gs) and web views (index.html).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
